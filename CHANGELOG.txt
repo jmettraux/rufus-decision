@@ -1,0 +1,6 @@
+
+= rufus-decision CHANGELOG.txt
+
+
+== rufus-decision - 0.9    released 2008/01/28
+
