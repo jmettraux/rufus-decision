@@ -88,9 +88,9 @@ http://rubyforge.org/tracker/?atid=18584&group_id=4812&func=browse
 
 == source
 
-http://rufus.rubyforge.org/svn/trunk/decision
+http://github.com/jmettraux/rufus-decision
 
-    svn checkout http://rufus.rubyforge.org/svn/trunk/decision
+    git clone git://github.com/jmettraux/rufus-decision.git
 
 
 == author
