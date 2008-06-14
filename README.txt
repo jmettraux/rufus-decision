@@ -4,7 +4,7 @@
 
 == getting it
 
-    sudo gem install rufus-decision
+    sudo gem install -y rufus-decision
 
 or at
 
@@ -97,6 +97,11 @@ http://github.com/jmettraux/rufus-decision
 
 John Mettraux, jmettraux@gmail.com 
 http://jmettraux.wordpress.com
+
+
+== the rest of Rufus
+
+http://rufus.rubyforge.org
 
 
 == license

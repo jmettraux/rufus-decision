@@ -16,21 +16,21 @@ require 'rufus/hashes'
 
 class EvalTest < Test::Unit::TestCase
 
-    #def setup
-    #end
+  #def setup
+  #end
 
-    #def teardown
-    #end
+  #def teardown
+  #end
 
-    def test_0
+  def test_0
 
-        eh = Rufus::EvalHashFilter.new({}, 0)
+    eh = Rufus::EvalHashFilter.new({}, 0)
 
-        eh['a'] = :a
-        eh['b'] = "r:5 * 5"
+    eh['a'] = :a
+    eh['b'] = "r:5 * 5"
 
-        assert_equal :a, eh['a']
-        assert_equal 25, eh['b']
-        assert_equal 72, eh['r:36+36']
-    end
+    assert_equal :a, eh['a']
+    assert_equal 25, eh['b']
+    assert_equal 72, eh['r:36+36']
+  end
 end
