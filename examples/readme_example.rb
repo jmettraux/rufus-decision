@@ -26,26 +26,26 @@ in:age,in:trait,out:salesperson
 #
 def determine_salesperson (customer)
 
-    TABLE.transform(customer)["salesperson"]
+  TABLE.transform(customer)["salesperson"]
 end
 
 puts determine_salesperson(
-    "age" => 72)
-    # => thorsten
+  "age" => 72)
+  # => thorsten
 
 puts determine_salesperson(
-    "age" => 25, "trait" => "rich")
-    # => adeslky
+  "age" => 25, "trait" => "rich")
+  # => adeslky
 
 puts determine_salesperson(
-    "age" => 23, "trait" => "cheerful")
-    # => adeslky
+  "age" => 23, "trait" => "cheerful")
+  # => adeslky
 
 puts determine_salesperson(
-    "age" => 25, "trait" => "maniac")
-    # => adeslky
+  "age" => 25, "trait" => "maniac")
+  # => adeslky
 
 puts determine_salesperson(
-    "age" => 44, "trait" => "maniac")
-    # => espadas
+  "age" => 44, "trait" => "maniac")
+  # => espadas
 
