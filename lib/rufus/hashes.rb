@@ -28,8 +28,7 @@
 # John Mettraux at openwfe.org
 #
 
-require 'rubygems'
-require 'rufus/eval'
+require 'rufus/treechecker'
 
 
 module Rufus
@@ -145,10 +144,9 @@ module Rufus
   #
   class EvalHashFilter < HashFilter
 
-    def initialize (parent_hash, eval_safety_level=0)
+    def initialize (parent_hash)
 
       super parent_hash
-      @safe_level = eval_safety_level
     end
 
     protected
@@ -170,8 +168,31 @@ module Rufus
 
       def do_eval (key, p, k)
 
-        Rufus::eval_safely(k, @safe_level, get_binding)
+        #Rufus::eval_safely(k, @safe_level, get_binding)
+        Rufus::check_and_eval(k, get_binding)
       end
+  end
+
+  TREECHECKER = Rufus::TreeChecker.new do
+
+    exclude_fvkcall :abort
+    exclude_fvkcall :exit, :exit!
+    exclude_fvkcall :system
+    exclude_eval
+    exclude_alias
+    exclude_global_vars
+    exclude_call_on File, FileUtils
+    exclude_module_tinkering
+    exclude_class_tinkering
+  end
+
+  def self.check_and_eval (ruby_code, bndng=binding())
+
+    TREECHECKER.check(ruby_code)
+
+    # OK, green for eval...
+
+    eval(ruby_code, bndng)
   end
 
   private

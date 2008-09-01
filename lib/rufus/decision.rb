@@ -162,8 +162,8 @@ module Rufus
   #
   # Currently, two options are supported, "ignorecase" and "through".
   #
-  # * "ignorecase", if found by the DecisionTable will make any match (in the "in"
-  #   columns) case unsensitive.
+  # * "ignorecase", if found by the DecisionTable will make any match (in the
+  #   "in" columns) case unsensitive.
   #
   # * "through", will make sure that EVERY row is evaluated and potentially
   #   applied. The default behaviour (without "through"), is to stop the
@@ -426,7 +426,7 @@ module Rufus
         #puts "...>>>#{s}<<<"
 
         begin
-          return Rufus::eval_safely(s, 4)
+          return Rufus::check_and_eval(s)
         rescue Exception => e
         end
 

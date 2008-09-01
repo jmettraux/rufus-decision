@@ -24,7 +24,7 @@ class EvalTest < Test::Unit::TestCase
 
   def test_0
 
-    eh = Rufus::EvalHashFilter.new({}, 0)
+    eh = Rufus::EvalHashFilter.new({})
 
     eh['a'] = :a
     eh['b'] = "r:5 * 5"

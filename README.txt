@@ -81,6 +81,11 @@ On the rufus-ruby list[http://groups.google.com/group/rufus-ruby] :
     http://groups.google.com/group/rufus-ruby
 
 
+== irc
+
+irc.freenode.net #ruote
+
+
 == issue tracker
 
 http://rubyforge.org/tracker/?atid=18584&group_id=4812&func=browse
