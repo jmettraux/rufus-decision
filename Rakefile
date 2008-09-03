@@ -9,7 +9,7 @@ require 'rake/rdoctask'
 require 'rake/testtask'
 
 
-RUFUS_DECISION_VERSION = '0.10'
+RUFUS_DECISION_VERSION = '1.0'
 
 #
 # GEM SPEC
