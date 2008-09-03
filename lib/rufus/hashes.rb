@@ -175,16 +175,30 @@ module Rufus
 
   TREECHECKER = Rufus::TreeChecker.new do
 
-    exclude_fvkcall :abort
-    exclude_fvkcall :exit, :exit!
-    exclude_fvkcall :system
-    exclude_eval
-    exclude_alias
-    exclude_global_vars
-    exclude_call_on File, FileUtils
-    exclude_module_tinkering
+    exclude_fvccall :abort, :exit, :exit!
+    exclude_fvccall :system, :fork, :syscall, :trap, :require, :load
+
+    #exclude_call_to :class
+    exclude_fvcall :private, :public, :protected
+
+    exclude_def               # no method definition
+    exclude_eval              # no eval, module_eval or instance_eval
+    exclude_backquotes        # no `rm -fR the/kitchen/sink`
+    exclude_alias             # no alias or aliast_method
+    exclude_global_vars       # $vars are off limits
+    exclude_module_tinkering  # no module opening
+    exclude_raise             # no raise or throw
+
+    exclude_rebinding Kernel # no 'k = Kernel'
+
+    exclude_access_to(
+      IO, File, FileUtils, Process, Signal, Thread, ThreadGroup)
+
     exclude_class_tinkering
+
+    exclude_call_to :instance_variable_get, :instance_variable_set
   end
+  TREECHECKER.freeze
 
   def self.check_and_eval (ruby_code, bndng=binding())
 

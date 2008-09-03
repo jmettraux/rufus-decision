@@ -24,6 +24,7 @@ spec = Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
   s.summary = "CSV based Ruby decision tables"
   #s.license = "MIT"
+  s.rubyforge_project = "rufus"
 
   s.require_path = 'lib'
   #s.autorequire = 'rufus-decision'
