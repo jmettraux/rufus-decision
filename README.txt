@@ -68,6 +68,40 @@ An example where a few rules determine which salesperson should interact with a 
 
 More at Rufus::DecisionTable
 
+Note that you can use a CSV table served over HTTP like in :
+
+  
+    require 'rubygems'
+    require 'rufus/decision'
+    
+    TABLE = Rufus::DecisionTable.new(
+      'http://spreadsheets.google.com/pub?key=pCkopoeZwCNsMWOVeDjR1TQ&output=csv')
+    
+    # the CSV is :
+    #
+    # in:weather,in:month,out:take_umbrella?
+    #
+    # raining,,yes
+    # sunny,,no
+    # cloudy,june,yes
+    # cloudy,may,yes
+    # cloudy,,no
+    
+    def take_umbrella? (weather, month=nil)
+      h = TABLE.transform('weather' => weather, 'month' => month)
+      h['take_umbrella?'] == 'yes'
+    end
+    
+    puts take_umbrella?('cloudy', 'june')
+      # => true
+    
+    puts take_umbrella?('sunny', 'june')
+      # => false
+
+In this example, the CSV table is the direction CSV representation of the Google spreadsheet at : http://spreadsheets.google.com/pub?key=pCkopoeZwCNsMWOVeDjR1TQ
+
+WARNING though : use at your own risk. CSV loaded from untrusted locations may contain harmful code. The rufus-decision gem has an abstract tree checker integrated, it will check all the CSVs that contain calls in Ruby and raise a security error when possibly harmful code is spotted. Bullet vs Armor. Be advised.
+
 
 = dependencies
 
