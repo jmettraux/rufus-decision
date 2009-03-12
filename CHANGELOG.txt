@@ -1,7 +1,7 @@
 
 = rufus-decision CHANGELOG.txt
 
-== rufus-decision - 0.10    released 2008/09/01
+== rufus-decision - 1.0    released 2008/09/01
 
 - todo #20670 : dropped rufus-eval in favour of rufus-treechecker
 

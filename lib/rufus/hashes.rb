@@ -28,6 +28,7 @@
 # John Mettraux at openwfe.org
 #
 
+require 'fileutils'
 require 'rufus/treechecker'
 
 
