@@ -1,4 +1,3 @@
-#
 #--
 # Copyright (c) 2007-2009, John Mettraux, jmettraux@gmail.com
 #
@@ -19,14 +18,10 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
+#
+# Made in Japan.
 #++
-#
 
-#
-# "made in Japan"
-#
-# John Mettraux at openwfe.org
-#
 
 require 'csv'
 require 'open-uri'
@@ -39,8 +34,6 @@ require 'rufus/hashes'
 
 module Rufus
 
-
-  #
   # Does s starts with prefix ?
   #
   def Rufus.starts_with? (s, prefix)
@@ -262,14 +255,14 @@ module Rufus
 
       csv_array.each do |row|
 
-        next if empty_row? row
+        next if empty_row?(row)
 
         if @header
 
           @rows << row.collect { |c| c.strip if c }
         else
 
-          parse_header_row row
+          parse_header_row(row)
         end
       end
     end
@@ -280,7 +273,7 @@ module Rufus
     #
     def transform (hash, options={})
 
-      transform! hash.dup, options
+      transform!(hash.dup, options)
     end
 
     #
@@ -309,7 +302,7 @@ module Rufus
     #
     def to_csv
 
-      s = ""
+      s = ''
       s << @header.to_csv
       s << "\n"
       @rows.each do |row|
@@ -325,12 +318,7 @@ module Rufus
 
         return nil if string.split("\n").size > 1
 
-        begin
-          return URI::parse(string)
-        rescue Exception => e
-        end
-
-        nil
+        URI::parse(string) rescue nil
       end
 
       def to_csv_array (csv_data)
@@ -341,7 +329,7 @@ module Rufus
 
         csv_data = open(csv_data) if parse_uri(csv_data)
 
-        CSV::Reader.parse csv_data
+        CSV::Reader.parse(csv_data)
       end
 
       def matches? (row, hash)
@@ -377,13 +365,8 @@ module Rufus
             numeric_compare value, cell
           else
 
-            range = to_ruby_range cell
-
-            if range
-              range.include?(value)
-            else
-              regex_compare value, cell
-            end
+            range = to_ruby_range(cell)
+            range ? range.include?(value) : regex_compare(value, cell)
           end
 
           return false unless b
@@ -407,13 +390,13 @@ module Rufus
       def numeric_compare (value, cell)
 
         comparator = cell[0, 1]
-        comparator += "=" if cell[1, 1] == "="
+        comparator += '=' if cell[1, 1] == '='
         cell = cell[comparator.length..-1]
 
-        nvalue = narrow(value)
-        ncell = narrow(cell)
+        nvalue = Float(value) rescue value
+        ncell = Float(cell) rescue cell
 
-        if nvalue.is_a? String or ncell.is_a? String
+        if nvalue.is_a?(String) or ncell.is_a?(String)
           value = '"' + value + '"'
           cell = '"' + cell + '"'
         else
@@ -425,20 +408,13 @@ module Rufus
 
         #puts "...>>>#{s}<<<"
 
-        begin
-          return Rufus::check_and_eval(s)
-        rescue Exception => e
-        end
+        #begin
+        #  return Rufus::check_and_eval(s)
+        #rescue Exception => e
+        #end
+        #false
 
-        false
-      end
-
-      def narrow (s)
-        begin
-          return Float(s)
-        rescue Exception => e
-        end
-        s
+        Rufus::check_and_eval(s) rescue false
       end
 
       def resolve_in_header (in_header)
@@ -490,24 +466,24 @@ module Rufus
           cell = cell.strip
           s = cell.downcase
 
-          if s == "ignorecase" or s == "ignore_case"
+          if s == 'ignorecase' or s == 'ignore_case'
             @ignore_case = true
             next
           end
 
-          if s == "through"
+          if s == 'through'
             @first_match = false
             next
           end
 
-          if s == "accumulate"
+          if s == 'accumulate'
             @first_match = false
             @accumulate = true
             next
           end
 
-          if Rufus::starts_with?(cell, "in:") or \
-             Rufus::starts_with?(cell, "out:")
+          if Rufus::starts_with?(cell, 'in:') or \
+             Rufus::starts_with?(cell, 'out:')
 
             @header = Header.new unless @header
             @header.add cell, icol
@@ -525,19 +501,16 @@ module Rufus
         true
       end
 
-      #
       # A regexp for checking if a string is a numeric Ruby range
       #
       RUBY_NUMERIC_RANGE_REGEXP = Regexp.compile(
         "^\\d+(\\.\\d+)?\\.{2,3}\\d+(\\.\\d+)?$")
 
-      #
       # A regexp for checking if a string is an alpha Ruby range
       #
       RUBY_ALPHA_RANGE_REGEXP = Regexp.compile(
         "^([A-Za-z])(\\.{2,3})([A-Za-z])$")
 
-      #
       # If the string contains a Ruby range definition
       # (ie something like "93.0..94.5" or "56..72"), it will return
       # the Range instance.
@@ -550,17 +523,13 @@ module Rufus
 
         range = if RUBY_NUMERIC_RANGE_REGEXP.match(s)
 
-          eval s
+          eval(s)
 
         else
 
           m = RUBY_ALPHA_RANGE_REGEXP.match(s)
 
-          if m
-            eval "'#{m[1]}'#{m[2]}'#{m[3]}'"
-          else
-            nil
-          end
+          m ? eval("'#{m[1]}'#{m[2]}'#{m[3]}'") : nil
         end
 
         class << range
@@ -569,11 +538,7 @@ module Rufus
 
           def include? (elt)
 
-            elt = if first.is_a?(Numeric)
-              Float(elt)
-            else
-              elt
-            end
+            elt = first.is_a?(Numeric) ? Float(elt) : elt
 
             old_include?(elt)
           end
@@ -607,7 +572,7 @@ module Rufus
 
         def to_csv
 
-          s = ""
+          s = ''
           @ins.each do |_in|
             s << "in:#{_in}," if _in
           end

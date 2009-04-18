@@ -9,7 +9,7 @@
 
 require 'test/unit'
 
-require 'dmixin'
+require File.dirname(__FILE__) + '/test_base.rb'
 
 
 class DecisionTest < Test::Unit::TestCase

@@ -1,6 +1,6 @@
 
 #
-# Testing rufus-dollar
+# Testing rufus-decision
 #
 # John Mettraux at openwfe.org
 #
@@ -8,6 +8,9 @@
 #
 
 require 'test/unit'
+
+require File.dirname(__FILE__) + '/test_base.rb'
+
 require 'rufus/hashes'
 
 #
@@ -27,7 +30,7 @@ class EvalTest < Test::Unit::TestCase
     eh = Rufus::EvalHashFilter.new({})
 
     eh['a'] = :a
-    eh['b'] = "r:5 * 5"
+    eh['b'] = 'r:5 * 5'
 
     assert_equal :a, eh['a']
     assert_equal 25, eh['b']

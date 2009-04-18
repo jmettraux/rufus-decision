@@ -1,6 +1,6 @@
 
 #
-# Testing rufus-deciision
+# Testing rufus-decision
 #
 # John Mettraux at openwfe.org
 #
@@ -9,7 +9,7 @@
 
 require 'test/unit'
 
-require 'dmixin'
+require File.dirname(__FILE__) + '/test_base.rb'
 
 
 class DecisionTest < Test::Unit::TestCase
