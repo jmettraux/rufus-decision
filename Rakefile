@@ -18,15 +18,15 @@ RUFUS_DECISION_VERSION = '1.0'
 
 spec = Gem::Specification.new do |s|
 
-  s.name = "rufus-decision"
+  s.name = 'rufus-decision'
   s.version = RUFUS_DECISION_VERSION
-  s.authors = [ "John Mettraux" ]
-  s.email = "jmettraux@gmail.com"
-  s.homepage = "http://rufus.rubyforge.org/rufus-decision"
+  s.authors = [ 'John Mettraux' ]
+  s.email = 'jmettraux@gmail.com'
+  s.homepage = 'http://rufus.rubyforge.org/rufus-decision'
   s.platform = Gem::Platform::RUBY
-  s.summary = "CSV based Ruby decision tables"
-  #s.license = "MIT"
-  s.rubyforge_project = "rufus"
+  s.summary = 'CSV based Ruby decision tables'
+  #s.license = 'MIT'
+  s.rubyforge_project = 'rufus'
 
   s.require_path = 'lib'
   #s.autorequire = 'rufus-decision'
@@ -56,7 +56,7 @@ task :default => [ :clean, :repackage ]
 # TESTING
 
 Rake::TestTask.new(:test) do |t|
-  t.libs << "test"
+  t.libs << 'test'
   t.test_files = FileList['test/test.rb']
   t.verbose = true
 end
