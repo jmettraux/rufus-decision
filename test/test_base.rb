@@ -16,7 +16,7 @@ module DecisionTestMixin
 
   def do_test (table_data, h, options, expected_result, verbose=false)
 
-    table = Rufus::DecisionTable.new table_data
+    table = Rufus::DecisionTable.new(table_data)
 
     if verbose
       puts
@@ -24,7 +24,7 @@ module DecisionTestMixin
       puts table.to_csv
       puts
       puts "before :"
-      puts wi
+      puts h
     end
 
     h = table.transform! h, options
@@ -37,17 +37,15 @@ module DecisionTestMixin
 
     expected_result.each do |k, v|
 
-      #if wi.attributes[k] != v
-      #end
-
       value = h[k]
 
       value = value.join(';') if value.is_a?(Array)
 
-      assert \
-        value == v,
-        "attribute '#{k}' should be set to '#{v}' "+
-        "but is set to '#{value}'"
+      #assert \
+      #  value == v,
+      #  "attribute '#{k}' should be set to '#{v}' "+
+      #  "but is set to '#{value}'"
+      assert_equal v, value
     end
   end
 

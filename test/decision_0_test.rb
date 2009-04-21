@@ -12,14 +12,8 @@ require 'test/unit'
 require File.dirname(__FILE__) + '/test_base.rb'
 
 
-class DecisionTest < Test::Unit::TestCase
+class Decision0Test < Test::Unit::TestCase
   include DecisionTestMixin
-
-  #def setup
-  #end
-
-  #def teardown
-  #end
 
   CSV0 = %{
 ,,
@@ -30,7 +24,7 @@ c,d,1
 e,f,2
 }
 
-  def test_csv_0
+  def test_0
 
     wi = {
       "fx" => "c",
@@ -64,32 +58,24 @@ e,f,2
 
   # test 1 moved to decision_1_test.rb
 
-  CSV2 = \
-"""
+  CSV2 = %{
 in:fx, in:fy, out:fz
 ,,
 a,   b,   0
 c,   d,   1
 e,   f,   2
-"""
+}
 
   def test_2
 
-    wi = {
-      "fx" => "c",
-      "fy" => "d"
-    }
+    wi = { "fx" => "c", "fy" => "d" }
     do_test(CSV2, wi, {}, { "fz" => "1" }, false)
 
-    wi = {
-      "fx" => "a",
-      "fy" => "d"
-    }
+    wi = { "fx" => "a", "fy" => "d" }
     do_test(CSV2, wi, {}, { "fz" => nil }, false)
   end
 
-  CSV3 = \
-"""
+  CSV3 = %{
 in:weather, in:month, out:take_umbrella?
 ,,
 raining,  ,     yes
@@ -97,7 +83,7 @@ sunny,    ,     no
 cloudy,   june,   yes
 cloudy,   may,    yes
 cloudy,   ,     no
-"""
+}
 
   def test_3
 
@@ -140,24 +126,24 @@ cloudy,   ,     no
 
   def test_3c
 
-     table = Rufus::DecisionTable.new("""
-       in:topic,in:region,out:team_member
-       sports,europe,Alice
-       sports,,Bob
-       finance,america,Charly
-       finance,europe,Donald
-       finance,,Ernest
-       politics,asia,Fujio
-       politics,america,Gilbert
-       politics,,Henry
-       ,,Zach
-     """)
+    table = Rufus::DecisionTable.new(%{
+      in:topic,in:region,out:team_member
+      sports,europe,Alice
+      sports,,Bob
+      finance,america,Charly
+      finance,europe,Donald
+      finance,,Ernest
+      politics,asia,Fujio
+      politics,america,Gilbert
+      politics,,Henry
+      ,,Zach
+    })
 
-     h = {}
-     h["topic"] = "politics"
-     table.transform! h
+    h = {}
+    h["topic"] = "politics"
+    table.transform! h
 
-     assert_equal "Henry",  h["team_member"]
+    assert_equal "Henry",  h["team_member"]
   end
 
   CSV3D = "http://spreadsheets.google.com/pub?key=pCkopoeZwCNsMWOVeDjR1TQ&output=csv&gid=0"
@@ -191,52 +177,25 @@ cloudy,   ,     no
 
   def test_3e
 
-     table = Rufus::DecisionTable.new("""
-       in:topic,in:region,out:team_member
-       sports,europe,Alice
-     """)
+    table = Rufus::DecisionTable.new(%{
+      in:topic,in:region,out:team_member
+      sports,europe,Alice
+    })
 
-     h0 = {}
-     h0["topic"] = "politics"
-     h1 = table.transform! h0
+    h0 = {}
+    h0["topic"] = "politics"
+    h1 = table.transform! h0
 
-     assert_equal h0.object_id, h1.object_id
+    assert_equal h0.object_id, h1.object_id
 
-     h0 = {}
-     h0["topic"] = "politics"
-     h1 = table.transform h0
+    h0 = {}
+    h0["topic"] = "politics"
+    h1 = table.transform h0
 
-     assert_not_equal h0.object_id, h1.object_id
+    assert_not_equal h0.object_id, h1.object_id
   end
 
-#  CSV4 = \
-#'''
-#"in:weather", "in:month", "out:take_umbrella?"
-#"","",""
-#"raining","","yes"
-#"sunny","","no"
-#"cloudy","june","yes"
-#"cloudy","may","yes"
-#"cloudy","","no"
-#'''
-
-  #def test_4
-  #  h = {}
-  #  h["weather"] = "raining"
-  #  h["month"] = "december"
-  #  do_test(CSV4, h, { "take_umbrella?" => "yes" }, false)
-  #  h = {}
-  #  h["weather"] = "cloudy"
-  #  h["month"] = "june"
-  #  do_test(CSV4, h, { "take_umbrella?" => "yes" }, false)
-  #  h = {}
-  #  h["weather"] = "cloudy"
-  #  h["month"] = "march"
-  #  do_test(CSV4, h, { "take_umbrella?" => "no" }, false)
-  #end
-
-  CSV5 = \
-"""
+  CSV5 = %{
 through,ignorecase,,
 ,,,
 in:fx, in:fy, out:fX, out:fY
@@ -245,7 +204,7 @@ a,   ,    true,
 ,    a,   ,     true
 b,   ,    false,
 ,    b,   ,     false
-"""
+}
 
   def test_5
 
@@ -271,15 +230,14 @@ b,   ,    false,
   #
   # TEST 6
 
-  CSV6 = \
-"""
+  CSV6 = %{
 ,
 in:fx, out:fy
 ,
 <10,a
 <=100,b
 ,c
-"""
+}
 
   def test_6
 
@@ -297,15 +255,14 @@ in:fx, out:fy
   #
   # TEST 7
 
-  CSV7 = \
-"""
+  CSV7 = %{
 ,
 in:fx, out:fy
 ,
 >100,a
 >=10,b
 ,c
-"""
+}
 
   def test_7
 
@@ -325,26 +282,24 @@ in:fx, out:fy
     do_test(CSV7, wi, {}, { "fy" => "a" }, false)
   end
 
-  CSV8 = \
-"""
+  CSV8 = %{
 in:efx,in:efy,out:efz
 a,b,0
 c,d,1
 e,f,2
-"""
+}
 
   def test_8
 
     assert_equal CSV8.strip, Rufus::DecisionTable.new(CSV8).to_csv.strip
   end
 
-  CSV9 = \
-"""
+  CSV9 = %{
 in:fx,in:fy,out:fz
 a,b,0
 c,d,${r: 1 + 2}
 e,f,2
-"""
+}
 
   def test_9
 
@@ -355,12 +310,11 @@ e,f,2
     do_test(CSV9, wi, { :ruby_eval => true }, { "fz" => "3" }, false)
   end
 
-  CSV10 = \
-"""
+  CSV10 = %{
 in:fx,in:fx,out:fz
 >90,<92,ok
 ,,bad
-"""
+}
 
   def test_10
 
@@ -374,11 +328,7 @@ in:fx,in:fx,out:fz
     do_test(CSV10, wi, {}, { "fz" => "bad" }, false)
   end
 
-  #
-  # Fu Zhang's test case
-
-  CSV11 = \
-'''
+  CSV11 = %{
 through
 in:f1,in:f1,in:f2,in:f3,out:o1,out:e1,out:e2
 
@@ -387,19 +337,15 @@ in:f1,in:f1,in:f2,in:f3,out:o1,out:e1,out:e2
 <100,>=95,>2.0,,"Expection1",,
 <100,>=95,,>2.0,,,"Expection2"
 <100,>=95,,>2.0,"Invalid",,
-'''
+}
 
-  def test_11
+  def test_fu_zhang
 
     wi = { "f1" => 97, "f2" => 5 }
     do_test CSV11, wi, {}, { "o1" => "Expection1" }, false
   end
 
-  #
-  # 'accumulate'
-
-  CSV12 = \
-"""
+  CSV12 = %{
 accumulate
 ,,,
 in:fx, in:fy, out:fX, out:fY
@@ -408,9 +354,9 @@ a,   ,    red,  green
 ,    a,   blue,   purple
 b,   ,    yellow, beige
 ,    b,   white,  kuro
-"""
+}
 
-  def test_12
+  def test_accumulate
 
     wi = { "fx" => "a", "fy" => "a" }
     do_test CSV12, wi, {}, { "fX" => "red;blue", "fY" => "green;purple" }, false
@@ -450,17 +396,13 @@ b,   ,    yellow, beige
     assert (not r.include?("7"))
   end
 
-  #
-  # Testing ranges
-
-  CSV13 = \
-"""
+  CSV13 = %{
 in:fx,out:fz
 90..92,ok
 ,bad
-"""
+}
 
-  def test_13
+  def test_range
 
     wi = { "fx" => "91" }
     do_test CSV13, wi, {}, { "fz" => "ok" }, false
