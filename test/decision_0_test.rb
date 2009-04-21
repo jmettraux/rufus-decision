@@ -21,15 +21,14 @@ class DecisionTest < Test::Unit::TestCase
   #def teardown
   #end
 
-  CSV0 = \
-"""
+  CSV0 = %{
 ,,
 in:fx,in:fy,out:fz
 ,,
 a,b,0
 c,d,1
 e,f,2
-"""
+}
 
   def test_csv_0
 
@@ -46,15 +45,13 @@ e,f,2
     do_test(CSV0, wi, {}, { "fz" => nil }, false)
   end
 
-  CSV0B = \
-"""
-
+  CSV0B = %{
 in:fx,in:fy,out:fz
 
 a,b,0
 c,d,1
 e,f,2
-"""
+}
 
   def test_0b
 

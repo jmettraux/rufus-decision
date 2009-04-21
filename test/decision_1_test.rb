@@ -21,8 +21,7 @@ class DecisionTest < Test::Unit::TestCase
   #def teardown
   #end
 
-  CSV1 = \
-"""
+  CSV1 = %{
 ,,
 in:fx,in:fy,out:fz
 ,,
@@ -30,7 +29,7 @@ a,${fx},0
 c,d,${fx}
 e,f,${r:3+4}
 g,h,${r:'${fx}' + '${fy}'}
-"""
+}
 
   def test_1
 
