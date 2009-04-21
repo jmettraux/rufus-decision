@@ -1,0 +1,84 @@
+
+<html>
+<head>
+  <title>testing a decision table</title>
+  <style>
+    /* tb rl */
+    /* t r b l */
+    body {
+      font-family: "Helvetica Neue Light", Helvetica, Arial, sans-serif;
+      font-size: 12pt;
+    }
+    .ruse_cell {
+      border-top: 1px solid #dddddd;
+      border-left: 1px solid #dddddd;
+      border-right: 1px solid #F0F0F0;
+      border-bottom: 1px solid #F0F0F0;
+      margin: 0;
+      padding: 0;
+      text-align: right;
+    }
+    /*.ruse_cell:focus { // not used
+      background-color: #f0f0f0;
+    }*/
+    .focused {
+      background-color: #f0f0f0;
+    }
+    .ruse_headcell {
+      height: 1em;
+      float: left;
+      background: #f0f0f0 url(/images/ruse_head_bg.png) repeat top left;
+    }
+    .ruse_headcell_left {
+      float: left;
+      background: white;
+      height: 1em;
+      width: 1px;
+    }
+    .ruse_headcell_handle {
+      height: 1em;
+      width: 3px;
+      cursor: w-resize;
+      float: right;
+    }
+  </style>
+
+  <script src="js/fluo-json.js"></script>
+  <script src="js/ruote-sheets.js"></script>
+  <script src="js/request.js"></script>
+</head>
+
+<body>
+
+<div id='sheet_in'></div>
+
+<div id='sheet_decision'></div>
+
+<input type="submit" onclick='return decide();' /><br />
+
+<textarea id='out'></textarea>
+
+<script src="/in.js"></script>
+<script src="/decision.js"></script>
+
+<script>
+
+  RuoteSheets.render('sheet_in', data_in);
+  RuoteSheets.render('sheet_decision', data_decision);
+
+  function decide () {
+    var data =
+      '[' +
+      fluoToJson(RuoteSheets.toArray('sheet_in')) + ',' +
+      fluoToJson(RuoteSheets.toArray('sheet_decision')) +
+      ']';
+    //alert(data);
+    var result = httpPost('/decision', data);
+    document.getElementById('out').value = result;
+  }
+
+</script>
+
+</body>
+</html>
+

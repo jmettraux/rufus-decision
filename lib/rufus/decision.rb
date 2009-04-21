@@ -220,24 +220,20 @@ module Rufus
   #
   class DecisionTable
 
-    #
     # when set to true, the transformation process stops after the
     # first match got applied.
     #
     attr_accessor :first_match
 
-    #
     # when set to true, matches evaluation ignores case.
     #
     attr_accessor :ignore_case
 
-    #
     # when set to true, multiple matches result get accumulated in
     # an array.
     #
     attr_accessor :accumulate
 
-    #
     # The constructor for DecisionTable, you can pass a String, an Array
     # (of arrays), a File object. The CSV parser coming with Ruby will take
     # care of it and a DecisionTable instance will be built.
@@ -267,7 +263,6 @@ module Rufus
       end
     end
 
-    #
     # Like transform, but the original hash doesn't get touched,
     # a copy of it gets transformed and finally returned.
     #
@@ -276,7 +271,6 @@ module Rufus
       transform!(hash.dup, options)
     end
 
-    #
     # Passes the hash through the decision table and returns it,
     # transformed.
     #
@@ -297,7 +291,6 @@ module Rufus
       hash
     end
 
-    #
     # Outputs back this table as a CSV String
     #
     def to_csv
@@ -314,274 +307,274 @@ module Rufus
 
     private
 
-      def parse_uri (string)
+    def parse_uri (string)
 
-        return nil if string.split("\n").size > 1
+      return nil if string.split("\n").size > 1
 
-        URI::parse(string) rescue nil
-      end
+      URI::parse(string) rescue nil
+    end
 
-      def to_csv_array (csv_data)
+    def to_csv_array (csv_data)
 
-        return csv_data if csv_data.kind_of?(Array)
+      return csv_data if csv_data.kind_of?(Array)
 
-        csv_data = csv_data.to_s if csv_data.is_a?(URI)
+      csv_data = csv_data.to_s if csv_data.is_a?(URI)
 
-        csv_data = open(csv_data) if parse_uri(csv_data)
+      csv_data = open(csv_data) if parse_uri(csv_data)
 
-        CSV::Reader.parse(csv_data)
-      end
+      CSV::Reader.parse(csv_data)
+    end
 
-      def matches? (row, hash)
+    def matches? (row, hash)
 
-        return false if empty_row?(row)
+      return false if empty_row?(row)
 
-        #puts
-        #puts "__row match ?"
-        #p row
+      #puts
+      #puts "__row match ?"
+      #p row
 
-        @header.ins.each_with_index do |in_header, icol|
+      @header.ins.each_with_index do |in_header, icol|
 
-          in_header = resolve_in_header(in_header)
+        in_header = resolve_in_header(in_header)
 
-          value = Rufus::dsub in_header, hash
+        value = Rufus::dsub in_header, hash
 
-          cell = row[icol]
+        cell = row[icol]
 
-          next if not cell
+        next if not cell
 
-          cell = cell.strip
+        cell = cell.strip
 
-          next if cell.length < 1
+        next if cell.length < 1
 
-          cell = Rufus::dsub cell, hash
+        cell = Rufus::dsub cell, hash
 
-          #puts "__does '#{value}' match '#{cell}' ?"
+        #puts "__does '#{value}' match '#{cell}' ?"
 
-          c = cell[0, 1]
+        c = cell[0, 1]
 
-          b = if c == '<' or c == '>'
+        b = if c == '<' or c == '>'
 
-            numeric_compare value, cell
-          else
-
-            range = to_ruby_range(cell)
-            range ? range.include?(value) : regex_compare(value, cell)
-          end
-
-          return false unless b
-        end
-
-        #puts "__row matches"
-
-        true
-      end
-
-      def regex_compare (value, cell)
-
-        modifiers = 0
-        modifiers += Regexp::IGNORECASE if @ignore_case
-
-        rcell = Regexp.new(cell, modifiers)
-
-        rcell.match(value)
-      end
-
-      def numeric_compare (value, cell)
-
-        comparator = cell[0, 1]
-        comparator += '=' if cell[1, 1] == '='
-        cell = cell[comparator.length..-1]
-
-        nvalue = Float(value) rescue value
-        ncell = Float(cell) rescue cell
-
-        if nvalue.is_a?(String) or ncell.is_a?(String)
-          value = '"' + value + '"'
-          cell = '"' + cell + '"'
+          numeric_compare value, cell
         else
-          value = nvalue
-          cell = ncell
+
+          range = to_ruby_range(cell)
+          range ? range.include?(value) : regex_compare(value, cell)
         end
 
-        s = "#{value} #{comparator} #{cell}"
-
-        #puts "...>>>#{s}<<<"
-
-        #begin
-        #  return Rufus::check_and_eval(s)
-        #rescue Exception => e
-        #end
-        #false
-
-        Rufus::check_and_eval(s) rescue false
+        return false unless b
       end
 
-      def resolve_in_header (in_header)
+      #puts "__row matches"
 
-        "${#{in_header}}"
+      true
+    end
+
+    def regex_compare (value, cell)
+
+      modifiers = 0
+      modifiers += Regexp::IGNORECASE if @ignore_case
+
+      rcell = Regexp.new(cell, modifiers)
+
+      rcell.match(value)
+    end
+
+    def numeric_compare (value, cell)
+
+      comparator = cell[0, 1]
+      comparator += '=' if cell[1, 1] == '='
+      cell = cell[comparator.length..-1]
+
+      nvalue = Float(value) rescue value
+      ncell = Float(cell) rescue cell
+
+      if nvalue.is_a?(String) or ncell.is_a?(String)
+        value = '"' + value + '"'
+        cell = '"' + cell + '"'
+      else
+        value = nvalue
+        cell = ncell
       end
 
-      def apply (row, hash)
+      s = "#{value} #{comparator} #{cell}"
 
-        @header.outs.each_with_index do |out_header, icol|
+      #puts "...>>>#{s}<<<"
 
-          next unless out_header
+      #begin
+      #  return Rufus::check_and_eval(s)
+      #rescue Exception => e
+      #end
+      #false
 
-          value = row[icol]
+      Rufus::check_and_eval(s) rescue false
+    end
 
-          next unless value
-          #next unless value.strip.length > 0
-          next unless value.length > 0
+    def resolve_in_header (in_header)
 
-          value = Rufus::dsub value, hash
+      "${#{in_header}}"
+    end
 
-          hash[out_header] = if @accumulate
-            #
-            # accumulate
+    def apply (row, hash)
 
-            v = hash[out_header]
-            if v and v.is_a?(Array)
-              v + Array(value)
-            elsif v
-              [ v, value ]
-            else
-              value
-            end
+      @header.outs.each_with_index do |out_header, icol|
+
+        next unless out_header
+
+        value = row[icol]
+
+        next unless value
+        #next unless value.strip.length > 0
+        next unless value.length > 0
+
+        value = Rufus::dsub value, hash
+
+        hash[out_header] = if @accumulate
+          #
+          # accumulate
+
+          v = hash[out_header]
+          if v and v.is_a?(Array)
+            v + Array(value)
+          elsif v
+            [ v, value ]
           else
-            #
-            # override
-
             value
           end
-        end
-      end
-
-      def parse_header_row (row)
-
-        row.each_with_index do |cell, icol|
-
-          next unless cell
-
-          cell = cell.strip
-          s = cell.downcase
-
-          if s == 'ignorecase' or s == 'ignore_case'
-            @ignore_case = true
-            next
-          end
-
-          if s == 'through'
-            @first_match = false
-            next
-          end
-
-          if s == 'accumulate'
-            @first_match = false
-            @accumulate = true
-            next
-          end
-
-          if Rufus::starts_with?(cell, 'in:') or \
-             Rufus::starts_with?(cell, 'out:')
-
-            @header = Header.new unless @header
-            @header.add cell, icol
-          end
-        end
-      end
-
-      def empty_row? (row)
-
-        return true unless row
-        return true if (row.length == 1 and not row[0])
-        row.each do |cell|
-          return false if cell
-        end
-        true
-      end
-
-      # A regexp for checking if a string is a numeric Ruby range
-      #
-      RUBY_NUMERIC_RANGE_REGEXP = Regexp.compile(
-        "^\\d+(\\.\\d+)?\\.{2,3}\\d+(\\.\\d+)?$")
-
-      # A regexp for checking if a string is an alpha Ruby range
-      #
-      RUBY_ALPHA_RANGE_REGEXP = Regexp.compile(
-        "^([A-Za-z])(\\.{2,3})([A-Za-z])$")
-
-      # If the string contains a Ruby range definition
-      # (ie something like "93.0..94.5" or "56..72"), it will return
-      # the Range instance.
-      # Will return nil else.
-      #
-      # The Ruby range returned (if any) will accept String or Numeric,
-      # ie (4..6).include?("5") will yield true.
-      #
-      def to_ruby_range (s)
-
-        range = if RUBY_NUMERIC_RANGE_REGEXP.match(s)
-
-          eval(s)
-
         else
+          #
+          # override
 
-          m = RUBY_ALPHA_RANGE_REGEXP.match(s)
-
-          m ? eval("'#{m[1]}'#{m[2]}'#{m[3]}'") : nil
-        end
-
-        class << range
-
-          alias :old_include? :include?
-
-          def include? (elt)
-
-            elt = first.is_a?(Numeric) ? Float(elt) : elt
-
-            old_include?(elt)
-          end
-
-        end if range
-
-        range
-      end
-
-      class Header
-
-        attr_accessor :ins, :outs
-
-        def initialize
-
-          @ins = []
-          @outs = []
-        end
-
-        def add (cell, icol)
-
-          if Rufus::starts_with?(cell, "in:")
-            @ins[icol] = cell[3..-1]
-            #puts "i added #{@ins[icol]}"
-          elsif Rufus::starts_with?(cell, "out:")
-            @outs[icol] = cell[4..-1]
-            #puts "o added #{@outs[icol]}"
-          end
-          # else don't add
-        end
-
-        def to_csv
-
-          s = ''
-          @ins.each do |_in|
-            s << "in:#{_in}," if _in
-          end
-          @outs.each do |out|
-            s << "out:#{out}," if out
-          end
-          s[0..-2]
+          value
         end
       end
+    end
+
+    def parse_header_row (row)
+
+      row.each_with_index do |cell, icol|
+
+        next unless cell
+
+        cell = cell.strip
+        s = cell.downcase
+
+        if s == 'ignorecase' or s == 'ignore_case'
+          @ignore_case = true
+          next
+        end
+
+        if s == 'through'
+          @first_match = false
+          next
+        end
+
+        if s == 'accumulate'
+          @first_match = false
+          @accumulate = true
+          next
+        end
+
+        if Rufus::starts_with?(cell, 'in:') or \
+           Rufus::starts_with?(cell, 'out:')
+
+          @header = Header.new unless @header
+          @header.add cell, icol
+        end
+      end
+    end
+
+    def empty_row? (row)
+
+      return true unless row
+      return true if (row.length == 1 and not row[0])
+      row.each do |cell|
+        return false if cell
+      end
+      true
+    end
+
+    # A regexp for checking if a string is a numeric Ruby range
+    #
+    RUBY_NUMERIC_RANGE_REGEXP = Regexp.compile(
+      "^\\d+(\\.\\d+)?\\.{2,3}\\d+(\\.\\d+)?$")
+
+    # A regexp for checking if a string is an alpha Ruby range
+    #
+    RUBY_ALPHA_RANGE_REGEXP = Regexp.compile(
+      "^([A-Za-z])(\\.{2,3})([A-Za-z])$")
+
+    # If the string contains a Ruby range definition
+    # (ie something like "93.0..94.5" or "56..72"), it will return
+    # the Range instance.
+    # Will return nil else.
+    #
+    # The Ruby range returned (if any) will accept String or Numeric,
+    # ie (4..6).include?("5") will yield true.
+    #
+    def to_ruby_range (s)
+
+      range = if RUBY_NUMERIC_RANGE_REGEXP.match(s)
+
+        eval(s)
+
+      else
+
+        m = RUBY_ALPHA_RANGE_REGEXP.match(s)
+
+        m ? eval("'#{m[1]}'#{m[2]}'#{m[3]}'") : nil
+      end
+
+      class << range
+
+        alias :old_include? :include?
+
+        def include? (elt)
+
+          elt = first.is_a?(Numeric) ? Float(elt) : elt
+
+          old_include?(elt)
+        end
+
+      end if range
+
+      range
+    end
+
+    class Header
+
+      attr_accessor :ins, :outs
+
+      def initialize
+
+        @ins = []
+        @outs = []
+      end
+
+      def add (cell, icol)
+
+        if Rufus::starts_with?(cell, "in:")
+          @ins[icol] = cell[3..-1]
+          #puts "i added #{@ins[icol]}"
+        elsif Rufus::starts_with?(cell, "out:")
+          @outs[icol] = cell[4..-1]
+          #puts "o added #{@outs[icol]}"
+        end
+        # else don't add
+      end
+
+      def to_csv
+
+        s = ''
+        @ins.each do |_in|
+          s << "in:#{_in}," if _in
+        end
+        @outs.each do |out|
+          s << "out:#{out}," if out
+        end
+        s[0..-2]
+      end
+    end
   end
 
 end
