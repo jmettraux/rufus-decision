@@ -211,6 +211,8 @@ module Rufus
   #
   class DecisionTable
 
+    VERSION = '1.1.0'
+
     IN = /^in:/
     OUT = /^out:/
 

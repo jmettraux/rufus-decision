@@ -11,15 +11,13 @@ require 'rake/testtask'
 require 'hanna/rdoctask'
 
 
-RUFUS_DECISION_VERSION = '1.0'
-
 #
 # GEM SPEC
 
 spec = Gem::Specification.new do |s|
 
   s.name = 'rufus-decision'
-  s.version = RUFUS_DECISION_VERSION
+  s.version = '1.1.0'
   s.authors = [ 'John Mettraux' ]
   s.email = 'jmettraux@gmail.com'
   s.homepage = 'http://rufus.rubyforge.org/rufus-decision'
@@ -32,22 +30,22 @@ spec = Gem::Specification.new do |s|
   #s.autorequire = 'rufus-decision'
   s.test_file = 'test/test.rb'
   s.has_rdoc = true
-  s.extra_rdoc_files = [ 'README.txt', 'CHANGELOG.txt', 'CREDITS.txt' ]
+  s.extra_rdoc_files = %w{ README.txt CHANGELOG.txt CREDITS.txt }
 
-  [ 'rufus-dollar', 'rufus-treechecker' ].each do |d|
+  %w{ rufus-dollar rufus-treechecker }.each do |d|
     s.requirements << d
     s.add_dependency d
   end
 
   files = FileList[ '{bin,docs,lib,test}/**/*' ]
-  files.exclude 'rdoc'
+  files.exclude('rdoc')
   s.files = files.to_a
 end
 
 #
 # tasks
 
-CLEAN.include('pkg', 'html', 'html')
+CLEAN.include('pkg', 'html')
 
 task :default => [ :clean, :repackage ]
 
@@ -61,6 +59,19 @@ Rake::TestTask.new(:test) do |t|
   t.verbose = true
 end
 
+
+#
+# VERSION
+
+task :change_version do
+
+  version = ARGV.pop
+  `sedip "s/VERSION = '.*'/VERSION = '#{version}'/" lib/rufus/decision.rb`
+  `sedip "s/^  s.version = '.*'/  s.version = '#{version}'/" Rakefile`
+  exit 0 # prevent rake from triggering other tasks
+end
+
+
 #
 # PACKAGING
 
@@ -68,7 +79,7 @@ Rake::GemPackageTask.new(spec) do |pkg|
   #pkg.need_tar = true
 end
 
-Rake::PackageTask.new('rufus-decision', RUFUS_DECISION_VERSION) do |pkg|
+Rake::PackageTask.new('rufus-decision', spec.version) do |pkg|
 
   pkg.need_zip = true
   pkg.package_files = FileList[
