@@ -12,7 +12,7 @@ require 'test/unit'
 require File.dirname(__FILE__) + '/test_base.rb'
 
 
-class DecisionTest < Test::Unit::TestCase
+class Decision1Test < Test::Unit::TestCase
   include DecisionTestMixin
 
   CSV1 = %{
@@ -58,6 +58,21 @@ g,h,${r:'${fx}' + '${fy}'}
 
     wi = { 'fx' => 'c', 'fy' => 'd' }
     do_test(CSV2, wi, {}, { 'fz' => 'c' }, false)
+  end
+
+  def test_empty_string_to_float
+
+    wi = { 'age' => '', 'trait' => 'maniac', 'name' => 'Baumgarter' }
+
+    table = [
+      %w{ in:age in:trait out:salesperson },
+      [ '18..35', '', 'Adeslky' ],
+      [ '25..35', '', 'Bronco' ],
+      [ '36..50', '', 'Espradas' ],
+      [ '', 'maniac', 'Korolev' ]
+    ]
+
+    do_test(table, wi, {}, { 'salesperson' => 'Korolev' }, true)
   end
 
 end

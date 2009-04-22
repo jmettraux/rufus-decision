@@ -1,6 +1,12 @@
 
 = rufus-decision CHANGELOG.txt
 
+
+== rufus-decision - 1.1    not yet released
+
+- bug #25589  : fixed issue with empty values and in:ranges
+
+
 == rufus-decision - 1.0    released 2008/09/01
 
 - todo #20670 : dropped rufus-eval in favour of rufus-treechecker

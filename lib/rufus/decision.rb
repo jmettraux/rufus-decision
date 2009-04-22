@@ -496,8 +496,7 @@ module Rufus
 
         def include? (elt)
 
-          elt = first.is_a?(Numeric) ? Float(elt) : elt
-
+          elt = first.is_a?(Numeric) ? (Float(elt) rescue '') : elt
           old_include?(elt)
         end
 

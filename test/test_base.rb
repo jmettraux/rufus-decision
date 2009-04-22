@@ -20,19 +20,19 @@ module DecisionTestMixin
 
     if verbose
       puts
-      puts "table :"
+      puts 'table :'
       puts table.to_csv
       puts
-      puts "before :"
-      puts h
+      puts 'before :'
+      p h
     end
 
     h = table.transform! h, options
 
     if verbose
       puts
-      puts "after :"
-      puts h
+      puts 'after :'
+      p h
     end
 
     expected_result.each do |k, v|
