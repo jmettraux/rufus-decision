@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+
+#
+# options
+
+opts = ARGV.inject([]) { |a, e|
+  t, v = e[0, 1] == '-' ? [ a, [ e ] ] : [ a.last || a, e ]; t << v; a
+}.inject({}) { |h, (k, v)|
+  h[k] = v || true; h
+} # cheap 5-liner optparse
+
+p opts
+

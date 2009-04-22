@@ -103,9 +103,14 @@ In this example, the CSV table is the direction CSV representation of the Google
 WARNING though : use at your own risk. CSV loaded from untrusted locations may contain harmful code. The rufus-decision gem has an abstract tree checker integrated, it will check all the CSVs that contain calls in Ruby and raise a security error when possibly harmful code is spotted. Bullet vs Armor. Be advised.
 
 
-= dependencies
+== uninstalling it
 
-The gem 'rufus-dollar' (http://rufus.rubyforge.org/rufus-dollar) and the 'rufus-eval' gem (http://rufus.rubyforge.org/rufus-eval).
+    sudo gem uninstall -y rufus-decision
+
+
+== dependencies
+
+The gem 'rufus-dollar' (http://rufus.rubyforge.org/rufus-dollar) and the 'rufus-treechecker' gem (http://rufus.rubyforge.org/rufus-treechecker).
 
 
 == mailing list

@@ -40,6 +40,9 @@ spec = Gem::Specification.new do |s|
   files = FileList[ '{bin,docs,lib,test}/**/*' ]
   files.exclude('rdoc')
   s.files = files.to_a
+
+  s.bindir = 'bin'
+  s.executables << 'rufus_decide'
 end
 
 #
@@ -86,6 +89,7 @@ Rake::PackageTask.new('rufus-decision', spec.version) do |pkg|
     'Rakefile',
     '*.txt',
     'lib/**/*',
+    'bin/**/*',
     'test/**/*'
   ].to_a
   #pkg.package_files.delete("MISC.txt")
