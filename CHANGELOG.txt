@@ -4,7 +4,8 @@
 
 == rufus-decision - 1.1    not yet released
 
-- bug #25589  : fixed issue with empty values and in:ranges
+- todo #25595 : Rufus::DecisionTable -> Rufus::Decision::Table
+- bug  #25589 : fixed issue with empty values and in:ranges
 
 
 == rufus-decision - 1.0    released 2008/09/01

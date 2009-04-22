@@ -1,6 +1,5 @@
-#
 #--
-# Copyright (c) 2008, John Mettraux, jmettraux@gmail.com
+# Copyright (c) 2008-2009, John Mettraux, jmettraux@gmail.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -19,20 +18,17 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
+#
+# Made in Japan.
 #++
-#
 
-#
-# "made in Japan"
-#
-# John Mettraux at openwfe.org
-#
 
 require 'fileutils'
 require 'rufus/treechecker'
 
 
 module Rufus
+module Decision
 
   #
   # In the Java world, this class would be considered abstract.
@@ -68,59 +64,59 @@ module Rufus
 
     protected
 
-      def do_split (element)
+    def do_split (element)
 
-        return [ nil, element ] unless element.is_a?(String)
+      return [ nil, element ] unless element.is_a?(String)
 
-        a = element.split(':', 2)
-        return [ nil ] + a if a.length == 1
-        a
+      a = element.split(':', 2)
+      return [ nil ] + a if a.length == 1
+      a
+    end
+
+    def handles_prefix? (p)
+
+      false
+    end
+
+    def do_eval (key, p, k)
+
+      raise NotImplementedError.new(
+        "missing do_eval(key, p, k) implementation")
+    end
+
+    def do_lookup (key, p, k)
+
+      if handles_prefix?(p)
+
+        do_eval(key, p, k)
+
+      elsif @parent_hash.respond_to?(:do_lookup)
+
+        @parent_hash.do_lookup(key, p, k)
+
+      else
+
+        @parent_hash[key]
       end
+    end
 
-      def handles_prefix? (p)
+    def do_put (key, value, p, v)
 
-        false
+      val = value
+
+      if handles_prefix?(p)
+
+        @parent_hash[key] = do_eval(value, p, v)
+
+      elsif @parent_hash.respond_to?(:do_put)
+
+        @parent_hash.do_put key, value, p, v
+
+      else
+
+        @parent_hash[key] = value
       end
-
-      def do_eval (key, p, k)
-
-        raise NotImplementedError.new(
-          "missing do_eval(key, p, k) implementation")
-      end
-
-      def do_lookup (key, p, k)
-
-        if handles_prefix?(p)
-
-          do_eval(key, p, k)
-
-        elsif @parent_hash.respond_to?(:do_lookup)
-
-          @parent_hash.do_lookup key, p, k
-
-        else
-
-          @parent_hash[key]
-        end
-      end
-
-      def do_put (key, value, p, v)
-
-        val = value
-
-        if handles_prefix?(p)
-
-          @parent_hash[key] = do_eval(value, p, v)
-
-        elsif @parent_hash.respond_to?(:do_put)
-
-          @parent_hash.do_put key, value, p, v
-
-        else
-
-          @parent_hash[key] = value
-        end
-      end
+    end
   end
 
   #
@@ -152,26 +148,24 @@ module Rufus
 
     protected
 
-      RP = [ 'r', 'ruby', 'reval' ]
+    RP = %w{ r ruby reval }
 
-      def handles_prefix? (prefix)
+    def handles_prefix? (prefix)
 
-        RP.include?(prefix)
-      end
+      RP.include?(prefix)
+    end
 
-      #
-      # Ready for override.
-      #
-      def get_binding
+    # Ready for override.
+    #
+    def get_binding
 
-        binding()
-      end
+      binding()
+    end
 
-      def do_eval (key, p, k)
+    def do_eval (key, p, k)
 
-        #Rufus::eval_safely(k, @safe_level, get_binding)
-        Rufus::check_and_eval(k, get_binding)
-      end
+      Rufus::Decision::check_and_eval(k, get_binding)
+    end
   end
 
   TREECHECKER = Rufus::TreeChecker.new do
@@ -210,12 +204,11 @@ module Rufus
     eval(ruby_code, bndng)
   end
 
-  private
+  #private
+  #def self.unescape (text)
+  #  text.gsub("\\\\\\$\\{", "\\${")
+  #end
 
-    def Rufus.unescape (text)
-
-      text.gsub("\\\\\\$\\{", "\\${")
-    end
-
+end
 end
 

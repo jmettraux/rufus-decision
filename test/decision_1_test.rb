@@ -72,7 +72,7 @@ g,h,${r:'${fx}' + '${fy}'}
       [ '', 'maniac', 'Korolev' ]
     ]
 
-    do_test(table, wi, {}, { 'salesperson' => 'Korolev' }, true)
+    do_test(table, wi, {}, { 'salesperson' => 'Korolev' }, false)
   end
 
 end

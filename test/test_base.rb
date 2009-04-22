@@ -16,7 +16,8 @@ module DecisionTestMixin
 
   def do_test (table_data, h, options, expected_result, verbose=false)
 
-    table = Rufus::DecisionTable.new(table_data)
+    #table = Rufus::DecisionTable.new(table_data)
+    table = Rufus::Decision::Table.new(table_data)
 
     if verbose
       puts
@@ -41,10 +42,6 @@ module DecisionTestMixin
 
       value = value.join(';') if value.is_a?(Array)
 
-      #assert \
-      #  value == v,
-      #  "attribute '#{k}' should be set to '#{v}' "+
-      #  "but is set to '#{value}'"
       assert_equal v, value
     end
   end

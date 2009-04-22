@@ -341,8 +341,8 @@ in:f1,in:f1,in:f2,in:f3,out:o1,out:e1,out:e2
 
   def test_fu_zhang
 
-    wi = { "f1" => 97, "f2" => 5 }
-    do_test CSV11, wi, {}, { "o1" => "Expection1" }, false
+    wi = { 'f1' => 97, 'f2' => 5 }
+    do_test CSV11, wi, {}, { 'o1' => 'Expection1' }, false
   end
 
   CSV12 = %{

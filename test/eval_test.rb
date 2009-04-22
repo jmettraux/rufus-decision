@@ -13,21 +13,12 @@ require File.dirname(__FILE__) + '/test_base.rb'
 
 require 'rufus/hashes'
 
-#
-# testing the 'dollar notation'
-#
 
 class EvalTest < Test::Unit::TestCase
 
-  #def setup
-  #end
-
-  #def teardown
-  #end
-
   def test_0
 
-    eh = Rufus::EvalHashFilter.new({})
+    eh = Rufus::Decision::EvalHashFilter.new({})
 
     eh['a'] = :a
     eh['b'] = 'r:5 * 5'

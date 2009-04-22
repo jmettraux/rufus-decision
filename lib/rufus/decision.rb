@@ -33,6 +33,9 @@ require 'rufus/hashes'
 
 
 module Rufus
+module Decision
+
+  VERSION = '1.1.0'
 
   #
   # A decision table is a description of a set of rules as a CSV (comma
@@ -76,7 +79,9 @@ module Rufus
   #
   # Enough words, some code :
   #
-  #   table = DecisionTable.new(%{
+  #   require 'rufus/decision'
+  #
+  #   table = Rufus::Decision::Table.new(%{
   #     in:topic,in:region,out:team_member
   #     sports,europe,Alice
   #     sports,,Bob
@@ -92,7 +97,7 @@ module Rufus
   #   h = {}
   #   h["topic"] = "politics"
   #
-  #   table.transform! h
+  #   table.transform!(h)
   #
   #   puts h["team_member"]
   #     # will yield "Henry" who takes care of all the politics stuff,
@@ -100,20 +105,19 @@ module Rufus
   #
   # '>', '>=', '<' and '<=' can be put in front of individual cell values :
   #
-  #   table = DecisionTable.new("""
+  #   table = Rufus::Decision::Table.new(%{
   #     ,
   #     in:fx, out:fy
   #     ,
   #     >100,a
   #     >=10,b
   #     ,c
-  #   """)
+  #   })
   #
   #   h = { 'fx' => '10' }
-  #   table.transform! h
+  #   h = table.transform(h)
   #
-  #   require 'pp'; pp h
-  #     # will yield { 'fx' => '10', 'fy' => 'b' }
+  #   p h # => { 'fx' => '10', 'fy' => 'b' }
   #
   # Such comparisons are done after the elements are transformed to float
   # numbers. By default, non-numeric arguments will get compared as Strings.
@@ -209,12 +213,11 @@ module Rufus
   #
   # * http://jmettraux.wordpress.com/2007/02/11/ruby-decision-tables/
   #
-  class DecisionTable
-
-    VERSION = '1.1.0'
+  class Table
 
     IN = /^in:/
     OUT = /^out:/
+    NUMERIC_COMPARISON = /^([><]=?)(.*)$/
 
     # when set to true, the transformation process stops after the
     # first match got applied.
@@ -270,15 +273,13 @@ module Rufus
     #
     def transform! (hash, options={})
 
-      hash = Rufus::EvalHashFilter.new(hash) if options[:ruby_eval] == true
+      hash = Rufus::Decision::EvalHashFilter.new(hash) \
+        if options[:ruby_eval] == true
 
       @rows.each do |row|
-
-        if matches?(row, hash)
-
-          apply(row, hash)
-          break if @first_match
-        end
+        next unless matches?(row, hash)
+        apply(row, hash)
+        break if @first_match
       end
 
       hash
@@ -317,7 +318,7 @@ module Rufus
 
       @header.ins.each_with_index do |in_header, icol|
 
-        in_header = resolve_in_header(in_header)
+        in_header = "${#{in_header}}"
 
         value = Rufus::dsub(in_header, hash)
 
@@ -331,11 +332,9 @@ module Rufus
 
         cell = Rufus::dsub(cell, hash)
 
-        c = cell[0, 1]
+        b = if m = NUMERIC_COMPARISON.match(cell)
 
-        b = if c == '<' or c == '>'
-
-          numeric_compare value, cell
+          numeric_compare(m, value, cell)
         else
 
           range = to_ruby_range(cell)
@@ -358,31 +357,23 @@ module Rufus
       rcell.match(value)
     end
 
-    def numeric_compare (value, cell)
+    def numeric_compare (match, value, cell)
 
-      comparator = cell[0, 1]
-      comparator += '=' if cell[1, 1] == '='
-      cell = cell[comparator.length..-1]
+      comparator = match[1]
+      cell = match[2]
 
       nvalue = Float(value) rescue value
       ncell = Float(cell) rescue cell
 
-      if nvalue.is_a?(String) or ncell.is_a?(String)
-        value = '"' + value + '"'
-        cell = '"' + cell + '"'
+      value, cell = if nvalue.is_a?(String) or ncell.is_a?(String)
+        [ "\"#{value}\"", "\"#{cell}\"" ]
       else
-        value = nvalue
-        cell = ncell
+        [ nvalue, ncell ]
       end
 
       s = "#{value} #{comparator} #{cell}"
 
-      Rufus::check_and_eval(s) rescue false
-    end
-
-    def resolve_in_header (in_header)
-
-      "${#{in_header}}"
+      Rufus::Decision::check_and_eval(s) rescue false
     end
 
     def apply (row, hash)
@@ -404,6 +395,7 @@ module Rufus
           # accumulate
 
           v = hash[out_header]
+
           if v and v.is_a?(Array)
             v + Array(value)
           elsif v
@@ -544,5 +536,17 @@ module Rufus
     end
   end
 
+end
+end
+
+module Rufus
+
+  #
+  # An 'alias' for the class Rufus::Decision::Table
+  #
+  # (for backward compatibility)
+  #
+  class DecisionTable < Rufus::Decision::Table
+  end
 end
 
