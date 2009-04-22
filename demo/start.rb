@@ -18,23 +18,46 @@ $:.unshift('lib')
 require 'rubygems'
 require 'rack'
 require 'json'
+require 'rufus/decision'
+
 
 class App
+
   def initialize
     @rfapp = Rack::File.new(File.dirname(__FILE__) + '/public')
   end
+
   def call (env)
     return decide(env) if env['PATH_INFO'] == '/decision'
     env['PATH_INFO'] = '/index.html' if env['PATH_INFO'] == '/'
     @rfapp.call(env)
   end
 
+  protected
+
+  def in_to_h (keys, values)
+    keys.inject({}) { |h, k| h[k] = values.shift; h }
+  end
+
   def decide (env)
+
     json = env['rack.input'].read
     json = JSON.parse(json)
-    p json.first
-    p json.last
-    [ 200, {}, 'toto' ]
+
+    dt = Rufus::DecisionTable.new(json.last)
+
+    #out = dt.transform!(in_to_h(json.first))
+    keys = json.first.first
+    rows = json.first[1..-1]
+    results = rows.collect do |row|
+      h = keys.inject({}) { |h, k| h[k] = row.shift; h }
+      h = dt.transform(h)
+      keys = (keys + h.keys).sort.uniq
+      keys.inject([]) { |a, k| a << h[k] }
+    end
+    results.unshift(keys)
+
+    [ 200, {}, results.to_json ]
   end
 end
 

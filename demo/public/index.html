@@ -60,11 +60,12 @@ decision table :
 
 <br/>
 
-<input type="submit" onclick='return decide();' value='decide !'/><br />
+out :
+<div id='sheet_out'></div>
 
 <br/>
 
-<textarea id='out'></textarea>
+<input type="submit" onclick='return decide();' value='decide !'/><br />
 
 <script src="/in.js"></script>
 <script src="/decision.js"></script>
@@ -75,14 +76,19 @@ decision table :
   RuoteSheets.render('sheet_decision', data_decision);
 
   function decide () {
+
     var data =
       '[' +
       fluoToJson(RuoteSheets.toArray('sheet_in')) + ',' +
       fluoToJson(RuoteSheets.toArray('sheet_decision')) +
       ']';
+
     //alert(data);
+
     var result = httpPost('/decision', data);
-    document.getElementById('out').value = result;
+    result = fluoFromJson(result);
+
+    RuoteSheets.render('sheet_out', result);
   }
 
 </script>

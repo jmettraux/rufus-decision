@@ -329,6 +329,10 @@ var RuoteSheets = function() {
 
   function render (sheet, data, widths) {
 
+    sheet = findElt(sheet);
+
+    while (sheet.firstChild) { sheet.removeChild(sheet.firstChild); }
+
     if ( ! widths) {
       widths = getWidths(sheet);
     }
@@ -560,7 +564,6 @@ var RuoteSheets = function() {
     sheet = findElt(sheet);
     if ( ! sheet.stack || sheet.stack.length < 1) return;
     var state = sheet.stack.pop();
-    while (sheet.firstChild) { sheet.removeChild(sheet.firstChild); }
     render(sheet, state[0], state[1]);
   }
 
