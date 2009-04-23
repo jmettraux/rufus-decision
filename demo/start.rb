@@ -44,7 +44,7 @@ class App
     json = env['rack.input'].read
     json = JSON.parse(json)
 
-    dt = Rufus::DecisionTable.new(json.last)
+    dt = Rufus::Decision::Table.new(json.last)
 
     #out = dt.transform!(in_to_h(json.first))
     keys = json.first.first

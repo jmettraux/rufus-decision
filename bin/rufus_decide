@@ -1,13 +1,39 @@
-#!/usr/bin/env ruby
+# just a brain dump
 
-#
-# options
+class Element
 
-opts = ARGV.inject([]) { |a, e|
-  t, v = e[0, 1] == '-' ? [ a, [ e ] ] : [ a.last || a, e ]; t << v; a
-}.inject({}) { |h, (k, v)|
-  h[k] = v || true; h
-} # cheap 5-liner optparse
+  attr_reader :array, :index
 
-p opts
+  def initialize (array, index)
+    @array = array
+    @index = index
+  end
+  def self.a_to_e (array, index=0)
+    new_element(array, index)
+  end
 
+  def first
+    new_element(@array, 0)
+  end
+  def next
+    new_element(@array, @index + 1)
+  end
+  def value
+    @array[@index]
+  end
+  def previous
+    new_element(@array, @index + 1)
+  end
+  def last
+    new_element(@array, @array.size - 1)
+  end
+
+  alias :prev :previous
+
+  private
+
+  def new_element (array, index)
+    array[index] ? Element.new(array, index) : nil
+  end
+
+end

@@ -2,8 +2,6 @@
 #
 # Testing rufus-decision
 #
-# John Mettraux at openwfe.org
-#
 # Mon Oct  9 22:19:44 JST 2006
 #
 

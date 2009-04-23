@@ -4,6 +4,8 @@
 
 == rufus-decision - 1.1    not yet released
 
+- todo #25629 : implemented Rufus::Decision.transpose(a)
+- todo #25630 : made Ruby 1.9.1 compatible
 - todo #25595 : Rufus::DecisionTable -> Rufus::Decision::Table
 - bug  #25589 : fixed issue with empty values and in:ranges
 

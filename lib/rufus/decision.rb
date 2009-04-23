@@ -237,7 +237,7 @@ module Decision
     # (of arrays), a File object. The CSV parser coming with Ruby will take
     # care of it and a DecisionTable instance will be built.
     #
-    def initialize (csv_data)
+    def initialize (csv)
 
       @first_match = true
       @ignore_case = false
@@ -246,14 +246,12 @@ module Decision
       @header = nil
       @rows = []
 
-      csv_array = to_csv_array(csv_data)
+      Rufus::Decision.csv_to_a(csv).each do |row|
 
-      csv_array.each do |row|
-
-        next if empty_row?(row)
+        #next if empty_row?(row)
 
         if @header
-          @rows << row.collect { |c| c.strip if c }
+          @rows << row
         else
           parse_header_row(row)
         end
@@ -295,26 +293,9 @@ module Decision
 
     private
 
-    def parse_uri (string)
-
-      return nil if string.split("\n").size > 1
-
-      URI::parse(string) rescue nil
-    end
-
-    def to_csv_array (csv_data)
-
-      return csv_data if csv_data.kind_of?(Array)
-
-      csv_data = csv_data.to_s if csv_data.is_a?(URI)
-      csv_data = open(csv_data) if parse_uri(csv_data)
-
-      CSV::Reader.parse(csv_data)
-    end
-
     def matches? (row, hash)
 
-      return false if empty_row?(row)
+      #return false if empty_row?(row)
 
       @header.ins.each_with_index do |in_header, icol|
 
@@ -324,11 +305,7 @@ module Decision
 
         cell = row[icol]
 
-        next if not cell
-
-        cell = cell.strip
-
-        next if cell.length < 1
+        next if cell == nil || cell == ''
 
         cell = Rufus::dsub(cell, hash)
 
@@ -384,9 +361,7 @@ module Decision
 
         value = row[icol]
 
-        next unless value
-        #next unless value.strip.length > 0
-        next unless value.length > 0
+        next if value == nil || value == ''
 
         value = Rufus::dsub(value, hash)
 
@@ -418,7 +393,6 @@ module Decision
 
         next unless cell
 
-        cell = cell.strip
         s = cell.downcase
 
         if s == 'ignorecase' or s == 'ignore_case'
@@ -438,20 +412,18 @@ module Decision
         end
 
         if cell.match(IN) or cell.match(OUT)
-
           @header ||= Header.new
           @header.add(cell, icol)
         end
       end
     end
 
-    def empty_row? (row)
-
-      return true unless row
-      return true if (row.length == 1 and not row[0])
-      row.each { |cell| return false if cell }
-      true
-    end
+    #def empty_row? (row)
+    #  return true unless row
+    #  return true if (row.length == 1 and not row[0])
+    #  row.each { |cell| return false if cell }
+    #  true
+    #end
 
     # A regexp for checking if a string is a numeric Ruby range
     #
@@ -533,6 +505,81 @@ module Decision
         end
         s[0..-2]
       end
+    end
+  end
+
+  # Given a CSV string or the URI / path to a CSV file, turns the CSV
+  # into an array of array.
+  #
+  def self.csv_to_a (csv)
+
+    return csv if csv.is_a?(Array)
+
+    csv = csv.to_s if csv.is_a?(URI)
+    csv = open(csv) if is_uri?(csv)
+
+    csv_lib = defined?(CSV::Reader) ? CSV::Reader : CSV
+      # no CSV::Reader for Ruby 1.9.1
+
+    csv_lib.parse(csv).inject([]) { |rows, row|
+      row = row.collect { |cell| cell ? cell.strip : nil }
+      rows << row if row.find { |cell| (cell && cell != '') }
+      rows
+    }
+  end
+
+  # Returns true if the string is a URI false if it's something else
+  # (CSV data ?)
+  #
+  def self.is_uri? (string)
+
+    return false if string.index("\n") # quick one
+
+    begin
+      URI::parse(string); return true
+    rescue
+    end
+
+    false
+  end
+
+  # Turns an array of array (rows / columns) into an array of hashes.
+  # The first row is considered the "row of keys".
+  #
+  #   [
+  #     [ 'age', 'name' ],
+  #     [ 33, 'Jeff' ],
+  #     [ 35, 'John' ]
+  #   ]
+  #
+  # =>
+  #
+  #  [
+  #    { 'age' => 33, 'name' => 'Jeff' },
+  #    { 'age' => 35, 'name' => 'John' }
+  #  ]
+  #
+  # You can also pass the CSV as a string or the URI/path to the actual CSV
+  # file.
+  #
+  def self.transpose (a)
+
+    a = csv_to_a(a) if a.is_a?(String)
+
+    return a if a.empty?
+
+    if a.first.is_a?(Hash)
+
+      keys = a.first.keys.sort
+      [ keys ] + a.collect { |row|
+        keys.collect { |k| row[k] }
+      }
+    else
+
+      keys = a.first
+      a[1..-1].collect { |row|
+        (0..keys.size - 1).inject({}) { |h, i| h[keys[i]] = row[i]; h }
+      }
     end
   end
 
