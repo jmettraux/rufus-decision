@@ -4,6 +4,7 @@
 
 == rufus-decision - 1.1    not yet released
 
+- todo #25642 : introducing bin/rufus_decided -t table.csv -i input.csv
 - todo #25629 : implemented Rufus::Decision.transpose(a)
 - todo #25630 : made Ruby 1.9.1 compatible
 - todo #25595 : Rufus::DecisionTable -> Rufus::Decision::Table

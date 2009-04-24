@@ -1,39 +1,86 @@
-# just a brain dump
+#!/usr/bin/env ruby
 
-class Element
+$:.unshift(File.dirname(__FILE__) + '/../lib') \
+  if File.exist?(File.dirname(__FILE__) + '/../lib/rufus')
+    # in dev mode, use the local rufus/decision
 
-  attr_reader :array, :index
+require 'rubygems'
+require 'rufus/decision'
 
-  def initialize (array, index)
-    @array = array
-    @index = index
+rest = []
+opts = {}
+while arg = ARGV.shift do
+  if arg.match(/^-/)
+    opts[arg] = (ARGV.first &&  ! ARGV.first.match(/^-/)) ? ARGV.shift : true
+  else
+    rest << arg
   end
-  def self.a_to_e (array, index=0)
-    new_element(array, index)
-  end
-
-  def first
-    new_element(@array, 0)
-  end
-  def next
-    new_element(@array, @index + 1)
-  end
-  def value
-    @array[@index]
-  end
-  def previous
-    new_element(@array, @index + 1)
-  end
-  def last
-    new_element(@array, @array.size - 1)
-  end
-
-  alias :prev :previous
-
-  private
-
-  def new_element (array, index)
-    array[index] ? Element.new(array, index) : nil
-  end
-
 end
+
+USAGE = %{
+
+  = #{File.basename(__FILE__)} -i input.csv -t table.csv
+
+  runs decision table 'table.csv' on input 'input.csv', outputs as CSV.
+
+  == for example
+
+  #{File.basename(__FILE__)} -i input.csv -t table.csv
+
+  == options
+
+  -v, --version   : print the version of itog.rb and exits
+  -h, --help      : print this help text and exits
+
+  -i, --input     : points to input file (mandatory)
+  -t, --table     : points to the decision table file (mandatory)
+
+  -r, --ruby      : output as a Ruby hash representation instead of CSV
+  -j, --json      : output as a JSON hash representation instead of CSV
+
+}
+
+if (opts['-h'] or opts['--help'])
+  puts USAGE
+  exit(0)
+end
+
+if (opts['-v'] or opts['--version'])
+  puts "rufus-decision #{Rufus::Decision::VERSION}"
+  exit(0)
+end
+
+ipath = opts['-i'] || opts['--input']
+tpath = opts['-t'] || opts['--table']
+
+if ipath == nil or tpath == nil
+
+  puts
+  puts "  ** missing --input and/or --table parameter"
+  puts USAGE
+  exit(1)
+end
+
+input = Rufus::Decision.csv_to_a(ipath)
+input = Rufus::Decision.transpose(input)
+
+table = Rufus::Decision::Table.new(tpath)
+
+output = input.inject([]) { |a, hash| a << table.transform(hash); a }
+
+if opts['-j'] or opts['--json']
+
+  require 'json' # sudo gem install json
+  puts output.to_json
+
+elsif opts['-r'] or opts['--ruby']
+
+  p output
+
+else # CSV
+  output = Rufus::Decision.transpose(output)
+  output.each do |row|
+    puts row.join(',')
+  end
+end
+
