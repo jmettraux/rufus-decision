@@ -5,10 +5,15 @@
   <style>
     /* tb rl */
     /* t r b l */
+
     body {
       font-family: "Helvetica Neue Light", Helvetica, Arial, sans-serif;
       font-size: 12pt;
     }
+    .table_buttons {
+      font-size: 70%
+    }
+
     .ruse_cell {
       border-top: 1px solid #dddddd;
       border-left: 1px solid #dddddd;
@@ -50,12 +55,24 @@
 
 <body>
 
-in :
+in : <span class="table_buttons">
+  <a href="#" onclick="RuoteSheets.addRow('sheet_in');">add row</a>
+  <a href="#" onclick="RuoteSheets.addCol('sheet_in');">add col</a>
+  <a href="#" onclick="RuoteSheets.deleteRow('sheet_in');">del row</a>
+  <a href="#" onclick="RuoteSheets.deleteCol('sheet_in');">del col</a>
+  <a href="#" onclick="RuoteSheets.undo('sheet_in');">undo</a>
+</span>
 <div id='sheet_in'></div>
 
 <br/>
 
-decision table :
+decision table : <span class="table_buttons">
+  <a href="#" onclick="RuoteSheets.addRow('sheet_decision');">add row</a>
+  <a href="#" onclick="RuoteSheets.addCol('sheet_decision');">add col</a>
+  <a href="#" onclick="RuoteSheets.deleteRow('sheet_decision');">del row</a>
+  <a href="#" onclick="RuoteSheets.deleteCol('sheet_decision');">del col</a>
+  <a href="#" onclick="RuoteSheets.undo('sheet_decision');">undo</a>
+</span>
 <div id='sheet_decision'></div>
 
 <br/>
@@ -82,8 +99,6 @@ out :
       fluoToJson(RuoteSheets.toArray('sheet_in')) + ',' +
       fluoToJson(RuoteSheets.toArray('sheet_decision')) +
       ']';
-
-    //alert(data);
 
     var result = httpPost('/decision', data);
     result = fluoFromJson(result);
