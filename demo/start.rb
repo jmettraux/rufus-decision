@@ -46,18 +46,15 @@ class App
 
     dt = Rufus::Decision::Table.new(json.last)
 
-    #out = dt.transform!(in_to_h(json.first))
-    keys = json.first.first
-    rows = json.first[1..-1]
-    results = rows.collect do |row|
-      h = keys.inject({}) { |h, k| h[k] = row.shift; h }
-      h = dt.transform(h)
-      keys = (keys + h.keys).sort.uniq
-      keys.inject([]) { |a, k| a << h[k] }
-    end
-    results.unshift(keys)
+    input = Rufus::Decision.transpose(json.first)
+      # from array of arrays to array of hashes
 
-    [ 200, {}, results.to_json ]
+    output = input.inject([]) { |a, hash| a << dt.transform(hash); a }
+
+    output = Rufus::Decision.transpose(output)
+      # from array of hashes to array of arrays
+
+    [ 200, {}, output.to_json ]
   end
 end
 
