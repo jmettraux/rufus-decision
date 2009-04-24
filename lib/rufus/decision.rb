@@ -217,6 +217,7 @@ module Decision
 
     IN = /^in:/
     OUT = /^out:/
+    IN_OR_OUT = /^(in|out):/
     NUMERIC_COMPARISON = /^([><]=?)(.*)$/
 
     # when set to true, the transformation process stops after the
@@ -243,19 +244,20 @@ module Decision
       @ignore_case = false
       @accumulate = false
 
-      @header = nil
-      @rows = []
+      #@header = nil
+      #@rows = []
+      #Rufus::Decision.csv_to_a(csv).each do |row|
+      #  if @header
+      #    @rows << row
+      #  else
+      #    parse_header_row(row)
+      #  end
+      #end
 
-      Rufus::Decision.csv_to_a(csv).each do |row|
+      @rows = Rufus::Decision.csv_to_a(csv)
 
-        #next if empty_row?(row)
-
-        if @header
-          @rows << row
-        else
-          parse_header_row(row)
-        end
-      end
+      extract_options
+      parse_header_row
     end
 
     # Like transform, but the original hash doesn't get touched,
@@ -387,43 +389,45 @@ module Decision
       end
     end
 
-    def parse_header_row (row)
+    def extract_options
 
-      row.each_with_index do |cell, icol|
+      row = @rows.first
+
+      return unless row
+      return if row.find { |cell| cell && cell.match(IN_OR_OUT) }
+
+      row.each do |cell|
 
         next unless cell
 
-        s = cell.downcase
+        cell = cell.downcase
 
-        if s == 'ignorecase' or s == 'ignore_case'
+        if cell == 'ignorecase' or cell == 'ignore_case'
           @ignore_case = true
-          next
-        end
-
-        if s == 'through'
+        elsif cell == 'through'
           @first_match = false
-          next
-        end
-
-        if s == 'accumulate'
+        elsif cell == 'accumulate'
           @first_match = false
           @accumulate = true
-          next
-        end
-
-        if cell.match(IN) or cell.match(OUT)
-          @header ||= Header.new
-          @header.add(cell, icol)
         end
       end
+
+      @rows.shift
+
+      extract_options
     end
 
-    #def empty_row? (row)
-    #  return true unless row
-    #  return true if (row.length == 1 and not row[0])
-    #  row.each { |cell| return false if cell }
-    #  true
-    #end
+    def parse_header_row
+
+      row = @rows.shift
+
+      return unless row
+
+      row.each_with_index do |cell, x|
+        next unless cell.match(IN_OR_OUT)
+        (@header ||= Header.new).add(cell, x)
+      end
+    end
 
     # A regexp for checking if a string is a numeric Ruby range
     #
