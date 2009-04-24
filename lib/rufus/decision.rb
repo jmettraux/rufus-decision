@@ -244,16 +244,6 @@ module Decision
       @ignore_case = false
       @accumulate = false
 
-      #@header = nil
-      #@rows = []
-      #Rufus::Decision.csv_to_a(csv).each do |row|
-      #  if @header
-      #    @rows << row
-      #  else
-      #    parse_header_row(row)
-      #  end
-      #end
-
       @rows = Rufus::Decision.csv_to_a(csv)
 
       extract_options
@@ -394,7 +384,10 @@ module Decision
       row = @rows.first
 
       return unless row
+        # end of table somehow
+
       return if row.find { |cell| cell && cell.match(IN_OR_OUT) }
+        # just hit the header row
 
       row.each do |cell|
 
@@ -417,11 +410,32 @@ module Decision
       extract_options
     end
 
+    # Returns true if the first row of the table contains just an "in:" or
+    # an "out:"
+    #
+    def is_vertical_table? (first_row)
+      bin = false
+      bout = false
+      first_row.each do |cell|
+        bin ||= cell.match(IN)
+        bout ||= cell.match(OUT)
+        return false if bin and bout
+      end
+      true
+    end
+
     def parse_header_row
 
-      row = @rows.shift
+      row = @rows.first
 
       return unless row
+
+      if is_vertical_table?(row)
+        @rows = @rows.transpose
+        row = @rows.first
+      end
+
+      @rows.shift
 
       row.each_with_index do |cell, x|
         next unless cell.match(IN_OR_OUT)

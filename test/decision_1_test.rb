@@ -46,10 +46,10 @@ g,h,${r:'${fx}' + '${fy}'}
 
   CSV2 = [
     %w{ in:fx in:fy out:fz },
-    %w{ a ${fx},0 },
+    %w{ a ${fx} 0 },
     %w{ c d ${fx} },
     %w{ e f ${r:3+4} },
-    %w{ g h ${r:'${fx}' + '${fy}'} },
+    [ 'g', 'h', "${r:'${fx}' + '${fy}'}" ]
   ]
 
   def test_with_array_table
@@ -71,6 +71,14 @@ g,h,${r:'${fx}' + '${fy}'}
     ]
 
     do_test(table, wi, {}, { 'salesperson' => 'Korolev' }, false)
+  end
+
+  def test_vertical_rules
+
+    table = CSV2.transpose
+
+    wi = { 'fx' => 'c', 'fy' => 'd' }
+    do_test(table, wi, {}, { 'fz' => 'c' }, false)
   end
 
 end
