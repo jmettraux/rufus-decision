@@ -38,6 +38,8 @@ USAGE = %{
   -r, --ruby      : output as a Ruby hash representation instead of CSV
   -j, --json      : output as a JSON hash representation instead of CSV
 
+  -g, --goal      : points to an ideal target CSV file (decision table testing)
+
 }
 
 if (opts['-h'] or opts['--help'])
@@ -52,6 +54,7 @@ end
 
 ipath = opts['-i'] || opts['--input']
 tpath = opts['-t'] || opts['--table']
+gpath = opts['-g'] || opts['--goal']
 
 if ipath == nil or tpath == nil
 
@@ -61,26 +64,72 @@ if ipath == nil or tpath == nil
   exit(1)
 end
 
+#
+# load CSV files
+
 input = Rufus::Decision.csv_to_a(ipath)
 input = Rufus::Decision.transpose(input)
 
 table = Rufus::Decision::Table.new(tpath)
 
+goal = gpath ? Rufus::Decision.csv_to_a(gpath) : nil
+
+#
+# run the decision table for each input row
+
 output = input.inject([]) { |a, hash| a << table.transform(hash); a }
 
-if opts['-j'] or opts['--json']
+if goal
+  #
+  # check if output matches 'goal'
 
-  require 'json' # sudo gem install json
-  puts output.to_json
+  puts
 
-elsif opts['-r'] or opts['--ruby']
+  goal = Rufus::Decision.transpose(goal)
 
-  p output
+  failures = []
 
-else # CSV
-  output = Rufus::Decision.transpose(output)
-  output.each do |row|
-    puts row.join(',')
+  goal.each_with_index do |hash, y|
+    if hash == output[y]
+      print '.'
+    else
+      print 'f'
+      failures << [ y, output[y], hash ]
+    end
+  end
+
+  puts
+
+  failures.each do |f|
+    row, output, expected = f
+    puts
+    puts "  at row #{row}, expected"
+    puts "    #{expected.inspect}"
+    puts "  but got"
+    puts "    #{output.inspect}"
+  end
+
+  puts "\n#{goal.size} rows, #{failures.size} failures"
+
+else
+  #
+  # print output
+
+  if opts['-j'] or opts['--json']
+
+    require 'json' # sudo gem install json
+    puts output.to_json
+
+  elsif opts['-r'] or opts['--ruby']
+
+    p output
+
+  else # CSV
+
+    output = Rufus::Decision.transpose(output)
+    output.each do |row|
+      puts row.join(',')
+    end
   end
 end
 
