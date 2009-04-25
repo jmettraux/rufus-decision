@@ -193,36 +193,52 @@ cloudy,   ,     no
     assert_not_equal h0.object_id, h1.object_id
   end
 
-  CSV5 = %{
-through,ignorecase,,
-,,,
-in:fx, in:fy, out:fX, out:fY
-,,,
-a,   ,    true,
-,    a,   ,     true
-b,   ,    false,
-,    b,   ,     false
-}
 
-  def test_5
+  def test_through_and_ignorecase
 
-    wi = {
-      "fx" => "a",
-      "fy" => "a"
+    table = %{
+      through,ignorecase,,
+      ,,,
+      in:fx, in:fy, out:fX, out:fY
+      ,,,
+      a,   ,    true,
+      ,    a,   ,     true
+      b,   ,    false,
+      ,    b,   ,     false
     }
-    do_test(CSV5, wi, {}, { "fX" => "true", "fY" => "true" }, false)
 
-    wi = {
-      "fx" => "a",
-      "fy" => "b"
-    }
-    do_test(CSV5, wi, {}, { "fX" => "true", "fY" => "false" }, false)
+    wi = { 'fx' => 'a', 'fy' => 'a' }
+    do_test(table, wi, {}, { 'fX' => 'true', 'fY' => 'true' }, false)
 
-    wi = {
-      "fx" => "A",
-      "fy" => "b"
+    wi = { 'fx' => 'a', 'fy' => 'b' }
+    do_test(table, wi, {}, { 'fX' => 'true', 'fY' => 'false' }, false)
+
+    wi = { 'fx' => 'A', 'fy' => 'b' }
+    do_test(table, wi, {}, { 'fX' => 'true', 'fY' => 'false' }, false)
+  end
+
+  def test_through_and_ignorecase_set_at_table_initialization
+
+    table = %{
+      in:fx, in:fy, out:fX, out:fY
+      ,,,
+      a,   ,    true,
+      ,    a,   ,     true
+      b,   ,    false,
+      ,    b,   ,     false
     }
-    do_test(CSV5, wi, {}, { "fX" => "true", "fY" => "false" }, false)
+
+    table = Rufus::Decision::Table.new(
+      table, :through => true, :ignore_case => true)
+
+    wi = { 'fx' => 'a', 'fy' => 'a' }
+    do_test(table, wi, {}, { 'fX' => 'true', 'fY' => 'true' }, false)
+
+    wi = { 'fx' => 'a', 'fy' => 'b' }
+    do_test(table, wi, {}, { 'fX' => 'true', 'fY' => 'false' }, false)
+
+    wi = { 'fx' => 'A', 'fy' => 'b' }
+    do_test(table, wi, {}, { 'fX' => 'true', 'fY' => 'false' }, false)
   end
 
   #
@@ -293,19 +309,24 @@ e,f,2
   end
 
   CSV9 = %{
-in:fx,in:fy,out:fz
-a,b,0
-c,d,${r: 1 + 2}
-e,f,2
-}
+    in:fx,in:fy,out:fz
+    a,b,0
+    c,d,${r: 1 + 2}
+    e,f,2
+  }
 
-  def test_9
+  def test_ruby_eval
 
-    wi = {
-      "fx" => "c",
-      "fy" => "d"
-    }
-    do_test(CSV9, wi, { :ruby_eval => true }, { "fz" => "3" }, false)
+    wi = { 'fx' => 'c', 'fy' => 'd' }
+    do_test(CSV9, wi, { :ruby_eval => true }, { 'fz' => '3' }, false)
+  end
+
+  def test_ruby_eval_set_at_table_initialization
+
+    table = Rufus::Decision::Table.new(CSV9, :ruby_eval => true)
+
+    wi = { 'fx' => 'c', 'fy' => 'd' }
+    do_test(table, wi, {}, { 'fz' => '3' }, false)
   end
 
   CSV10 = %{

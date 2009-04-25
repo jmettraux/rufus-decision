@@ -238,11 +238,12 @@ module Decision
     # (of arrays), a File object. The CSV parser coming with Ruby will take
     # care of it and a DecisionTable instance will be built.
     #
-    def initialize (csv)
+    def initialize (csv, params={})
 
-      @first_match = true
-      @ignore_case = false
-      @accumulate = false
+      @first_match = (params[:through] != true)
+      @ignore_case = params[:ignore_case] || params[:ignorecase]
+      @accumulate = params[:accumulate]
+      @ruby_eval = params[:ruby_eval]
 
       @rows = Rufus::Decision.csv_to_a(csv)
 
@@ -255,7 +256,7 @@ module Decision
     #
     def transform (hash, options={})
 
-      transform!(hash.dup, options)
+      transform!(hash.dup)
     end
 
     # Passes the hash through the decision table and returns it,
@@ -264,7 +265,7 @@ module Decision
     def transform! (hash, options={})
 
       hash = Rufus::Decision::EvalHashFilter.new(hash) \
-        if options[:ruby_eval] == true
+        if @ruby_eval || options[:ruby_eval] == true
 
       @rows.each do |row|
         next unless matches?(row, hash)
@@ -285,17 +286,17 @@ module Decision
 
     private
 
+    # Returns true if the hash matches the in: values for this row
+    #
     def matches? (row, hash)
 
-      #return false if empty_row?(row)
-
-      @header.ins.each_with_index do |in_header, icol|
+      @header.ins.each_with_index do |in_header, x|
 
         in_header = "${#{in_header}}"
 
         value = Rufus::dsub(in_header, hash)
 
-        cell = row[icol]
+        cell = row[x]
 
         next if cell == nil || cell == ''
 

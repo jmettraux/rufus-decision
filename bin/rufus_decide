@@ -29,16 +29,24 @@ USAGE = %{
 
   == options
 
-  -v, --version   : print the version of itog.rb and exits
-  -h, --help      : print this help text and exits
+  -v, --version     : print the version of itog.rb and exits
+  -h, --help        : print this help text and exits
 
-  -i, --input     : points to input file (mandatory)
-  -t, --table     : points to the decision table file (mandatory)
+  -i, --input       : points to input file (mandatory)
+  -t, --table       : points to the decision table file (mandatory)
 
-  -r, --ruby      : output as a Ruby hash representation instead of CSV
-  -j, --json      : output as a JSON hash representation instead of CSV
+  -r, --ruby        : output as a Ruby hash representation instead of CSV
+  -j, --json        : output as a JSON hash representation instead of CSV
 
-  -g, --goal      : points to an ideal target CSV file (decision table testing)
+  -T, --through     : don't stop at first match, run each row
+  -I, --ignore-case : ignore case when comparing values for row matching
+  -A, --accumulate  : use with -t, each time a new match is made for an 'out',
+                      values are not overriden but gathered in an array
+  -R, --ruby-eval   : allow evaluation of embedded ruby code (potentially 
+                      harmful)
+
+  -g, --goal        : points to an ideal target CSV file
+                      (decision table testing)
 
 }
 
@@ -70,7 +78,13 @@ end
 input = Rufus::Decision.csv_to_a(ipath)
 input = Rufus::Decision.transpose(input)
 
-table = Rufus::Decision::Table.new(tpath)
+params = {}
+params[:ignore_case] = opts['-I'] || opts['--ignore-case']
+params[:ruby_eval] = opts['-R'] || opts['--ruby-eval']
+params[:through] = opts['-T'] || opts['--through']
+params[:accumulate] = opts['-A'] || opts['--accumulate']
+
+table = Rufus::Decision::Table.new(tpath, params)
 
 goal = gpath ? Rufus::Decision.csv_to_a(gpath) : nil
 
