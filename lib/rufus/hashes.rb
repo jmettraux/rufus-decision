@@ -43,6 +43,8 @@ module Decision
   #
   class HashFilter
 
+    attr_reader :parent_hash
+
     def initialize (parent_hash)
 
       @parent_hash = parent_hash
@@ -143,7 +145,7 @@ module Decision
 
     def initialize (parent_hash)
 
-      super parent_hash
+      super(parent_hash)
     end
 
     protected

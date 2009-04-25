@@ -295,7 +295,7 @@ module Decision
         break if @first_match
       end
 
-      hash
+      hash.is_a?(Rufus::Decision::HashFilter) ? hash.parent_hash : hash
     end
 
     alias :run :transform
@@ -602,15 +602,17 @@ module Decision
 
     return a if a.empty?
 
-    if a.first.is_a?(Hash)
+    first = a.first
 
-      keys = a.first.keys.sort
+    if first.is_a?(Hash)
+
+      keys = first.keys.sort
       [ keys ] + a.collect { |row|
         keys.collect { |k| row[k] }
       }
     else
 
-      keys = a.first
+      keys = first
       a[1..-1].collect { |row|
         (0..keys.size - 1).inject({}) { |h, i| h[keys[i]] = row[i]; h }
       }
