@@ -3,6 +3,7 @@
 <head>
   <title>testing a decision table</title>
   <style>
+
     /* tb rl */
     /* t r b l */
 
@@ -10,6 +11,18 @@
       font-family: "Helvetica Neue Light", Helvetica, Arial, sans-serif;
       font-size: 12pt;
     }
+
+    #central {
+    }
+    #left_pane {
+      width: 100px;
+      float: left;
+    }
+    #right_pane {
+      margin-left: 10px;
+      float: left;
+    }
+
     .table_buttons {
       font-size: 70%
     }
@@ -55,34 +68,48 @@
 
 <body>
 
-in : <span class="table_buttons">
-  <a href="#" onclick="RuoteSheets.addRow('sheet_in');">add row</a>
-  <a href="#" onclick="RuoteSheets.addCol('sheet_in');">add col</a>
-  <a href="#" onclick="RuoteSheets.deleteRow('sheet_in');">del row</a>
-  <a href="#" onclick="RuoteSheets.deleteCol('sheet_in');">del col</a>
-  <a href="#" onclick="RuoteSheets.undo('sheet_in');">undo</a>
-</span>
-<div id='sheet_in'></div>
+<div id="central">
 
-<br/>
+  <div id="left_pane">
+    <img src="/images/arrow.png" align="right"/>
+  </div>
 
-decision table : <span class="table_buttons">
-  <a href="#" onclick="RuoteSheets.addRow('sheet_decision');">add row</a>
-  <a href="#" onclick="RuoteSheets.addCol('sheet_decision');">add col</a>
-  <a href="#" onclick="RuoteSheets.deleteRow('sheet_decision');">del row</a>
-  <a href="#" onclick="RuoteSheets.deleteCol('sheet_decision');">del col</a>
-  <a href="#" onclick="RuoteSheets.undo('sheet_decision');">undo</a>
-</span>
-<div id='sheet_decision'></div>
+  <div id="right_pane">
 
-<br/>
+    in : <span class="table_buttons">
+      <a href="#" onclick="RuoteSheets.addRow('sheet_in');">add row</a>
+      <a href="#" onclick="RuoteSheets.addCol('sheet_in');">add col</a>
+      <a href="#" onclick="RuoteSheets.deleteRow('sheet_in');">del row</a>
+      <a href="#" onclick="RuoteSheets.deleteCol('sheet_in');">del col</a>
+      <a href="#" onclick="RuoteSheets.undo('sheet_in');">undo</a>
+    </span>
+    <div id='sheet_in'></div>
 
-out :
-<div id='sheet_out'></div>
+    <br/>
 
-<br/>
+    decision table : <span class="table_buttons">
+      <a href="#" onclick="RuoteSheets.addRow('sheet_decision');">add row</a>
+      <a href="#" onclick="RuoteSheets.addCol('sheet_decision');">add col</a>
+      <a href="#" onclick="RuoteSheets.deleteRow('sheet_decision');">del row</a>
+      <a href="#" onclick="RuoteSheets.deleteCol('sheet_decision');">del col</a>
+      <a href="#" onclick="RuoteSheets.undo('sheet_decision');">undo</a>
+    </span>
+    <div id='sheet_decision'></div>
 
-<input type="submit" onclick='return decide();' value='decide !'/><br />
+    <br/>
+
+    <input type="submit" onclick='return decide();' value='decide !'/><br />
+
+    <br/>
+
+    out :
+    <div id='sheet_out'></div>
+
+  </div>
+
+</div>
+
+<!-- some javascript -->
 
 <script src="/in.js"></script>
 <script src="/decision.js"></script>
