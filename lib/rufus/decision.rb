@@ -130,9 +130,9 @@ module Decision
   # hash.
   #
   #
-  # == Ruby ranges
+  # == [ruby] ranges
   #
-  # Ruby ranges are also accepted in cells.
+  # Ruby-like ranges are also accepted in cells.
   #
   #   in:f0,out:result
   #   ,
@@ -148,9 +148,9 @@ module Decision
   # You can put options on their own in a cell BEFORE the line containing
   # "in:xxx" and "out:yyy" (ins and outs).
   #
-  # Currently, two options are supported, "ignorecase" and "through".
+  # Three options are supported, "ignorecase", "through" and "accumulate".
   #
-  # * "ignorecase", if found by the DecisionTable will make any match (in the
+  # * "ignorecase", if found by the decision table will make any match (in the
   #   "in" columns) case unsensitive.
   #
   # * "through", will make sure that EVERY row is evaluated and potentially
@@ -159,6 +159,8 @@ module Decision
   #
   # * "accumulate", behaves as with "through" set but instead of overriding
   #   values each time a match is found, will gather them in an array.
+  #
+  # an example of 'accumulate'
   #
   #   accumulate
   #   in:f0,out:result
@@ -169,11 +171,18 @@ module Decision
   #
   #   will yield { result => [ 'normal', 'large' ]} for f0 => 56
   #
+  # === Setting options at table initialization
+  #
+  # It's OK to set the options at initialization time :
+  #
+  #   table = Rufus::Decision::Table.new(
+  #     csv, :ruby_eval => true, :accumulate => true)
+  #
   #
   # == Cross references
   #
   # By using the 'dollar notation', it's possible to reference a value
-  # already in the hash.
+  # already in the hash (that is, the hash undergoing 'transformation').
   #
   #   in:value,in:roundup,out:newvalue
   #   0..32,true,32
@@ -196,7 +205,7 @@ module Decision
   # Note though that this feature is only enabled via the :ruby_eval
   # option of the transform!() method.
   #
-  #   decisionTable.transform! h, :ruby_eval => true
+  #   decisionTable.transform!(h, :ruby_eval => true)
   #
   # That decision table may look like :
   #
@@ -207,6 +216,13 @@ module Decision
   #
   # (It's a very simplistic example, but I hope it demonstrates the
   # capabilities of this technique)
+  #
+  # It's OK to set the :ruby_eval parameter when initializing the decision
+  # table :
+  #
+  #   table = Rufus::Decision::Table.new(csv, :ruby_eval => true)
+  #
+  # so that there is no need to specify it at transform() call time.
   #
   #
   # == See also
@@ -238,12 +254,18 @@ module Decision
     # (of arrays), a File object. The CSV parser coming with Ruby will take
     # care of it and a DecisionTable instance will be built.
     #
+    # parameters (options) are :through, :ignore_case, :accumulate (which
+    # forces :through to true when set) and :ruby_eval. See
+    # Rufus::Decision::Table for more details.
+    #
     def initialize (csv, params={})
 
       @first_match = (params[:through] != true)
       @ignore_case = params[:ignore_case] || params[:ignorecase]
       @accumulate = params[:accumulate]
       @ruby_eval = params[:ruby_eval]
+
+      @first_match = false if @accumulate
 
       @rows = Rufus::Decision.csv_to_a(csv)
 

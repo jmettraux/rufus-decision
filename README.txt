@@ -13,15 +13,15 @@ http://rubyforge.org/frs/?group_id=4812
 
 == usage
 
+more info at http://rufus.rubyforge.org/rufus-decision/classes/Rufus/Decision/Table.html, but here is a recap.
+
 An example where a few rules determine which salesperson should interact with a customer with given characteristics.
 
 
   require 'rubygems'
   require 'rufus/decision'
   
-  include Rufus
-  
-  TABLE = DecisionTable.new(%{
+  TABLE = Rufus::Decision::Table.new(%{
     in:age,in:trait,out:salesperson
     
     18..35,,adeslky
@@ -41,31 +41,26 @@ An example where a few rules determine which salesperson should interact with a 
   #
   def determine_salesperson (customer)
   
-      TABLE.transform(customer)["salesperson"]
+    TABLE.transform(customer)["salesperson"]
   end
   
   puts determine_salesperson(
-      "age" => 72)
-      # => thorsten
+    "age" => 72) # => thorsten
   
   puts determine_salesperson(
-      "age" => 25, "trait" => "rich")
-      # => adeslky
+    "age" => 25, "trait" => "rich") # => adeslky
   
   puts determine_salesperson(
-      "age" => 23, "trait" => "cheerful")
-      # => adeslky
+    "age" => 23, "trait" => "cheerful") # => adeslky
   
   puts determine_salesperson(
-      "age" => 25, "trait" => "maniac")
-      # => adeslky
+    "age" => 25, "trait" => "maniac") # => adeslky
   
   puts determine_salesperson(
-      "age" => 44, "trait" => "maniac")
-      # => espadas
+    "age" => 44, "trait" => "maniac") # => espadas
 
 
-More at Rufus::DecisionTable
+More at Rufus::Decision::Table
 
 Note that you can use a CSV table served over HTTP like in :
 
@@ -99,7 +94,7 @@ Note that you can use a CSV table served over HTTP like in :
 
 In this example, the CSV table is the direction CSV representation of the Google spreadsheet at : http://spreadsheets.google.com/pub?key=pCkopoeZwCNsMWOVeDjR1TQ
 
-WARNING though : use at your own risk. CSV loaded from untrusted locations may contain harmful code. The rufus-decision gem has an abstract tree checker integrated, it will check all the CSVs that contain calls in Ruby and raise a security error when possibly harmful code is spotted. Bullet vs Armor. Be advised.
+WARNING though : use at your own risk. CSV loaded from untrusted locations may contain harmful code. The rufus-decision gem has an abstract tree checker integrated, it will check all the CSVs that contain calls in Ruby and raise a security error when possibly harmful code is spotted. Bullet vs Armor. Be warned.
 
 
 == uninstalling it
