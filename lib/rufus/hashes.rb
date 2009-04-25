@@ -164,10 +164,12 @@ module Decision
 
     def do_eval (key, p, k)
 
-      Rufus::Decision::check_and_eval(k, get_binding)
+      Rufus::Decision.check_and_eval(k, get_binding)
     end
   end
 
+  # An abstract syntax tree check (prior to any ruby eval)
+  #
   TREECHECKER = Rufus::TreeChecker.new do
 
     exclude_fvccall :abort, :exit, :exit!
@@ -195,6 +197,9 @@ module Decision
   end
   TREECHECKER.freeze
 
+  # Given a string (of ruby code), first makes sure it doesn't contain
+  # harmful code, then evaluates it.
+  #
   def self.check_and_eval (ruby_code, bndng=binding())
 
     TREECHECKER.check(ruby_code)
@@ -203,11 +208,6 @@ module Decision
 
     eval(ruby_code, bndng)
   end
-
-  #private
-  #def self.unescape (text)
-  #  text.gsub("\\\\\\$\\{", "\\${")
-  #end
 
 end
 end

@@ -35,13 +35,13 @@ g,h,${r:'${fx}' + '${fy}'}
   def test_1b
 
     h = { 'fx' => 'e', 'fy' => 'f' }
-    do_test(CSV1, h, { :ruby_eval => true }, { "fz" => "7" }, false)
+    do_test(CSV1, h, { :ruby_eval => true }, { 'fz' => '7' }, false)
   end
 
   def test_1c
 
     h = { 'fx' => 'g', 'fy' => 'h' }
-    do_test(CSV1, h, { :ruby_eval => true }, { "fz" => "gh" }, false)
+    do_test(CSV1, h, { :ruby_eval => true }, { 'fz' => 'gh' }, false)
   end
 
   CSV2 = [
@@ -79,6 +79,18 @@ g,h,${r:'${fx}' + '${fy}'}
 
     wi = { 'fx' => 'c', 'fy' => 'd' }
     do_test(table, wi, {}, { 'fz' => 'c' }, false)
+  end
+
+  def test_vertical_rules_2
+
+    table = %{
+in:topic,sports,sports,finance,finance,finance,politics,politics,politics,
+in:region,europe,,america,europe,,asia,america,,
+out:team_member,Alice,Bob,Charly,Donald,Ernest,Fujio,Gilbert,Henry,Zach
+    }
+
+    h = { 'topic' => 'politics', 'region' => 'america' }
+    do_test(table, h, {}, { 'team_member' => 'Gilbert' }, false)
   end
 
 end

@@ -374,8 +374,6 @@ module Decision
 
       @header.outs.each_with_index do |out_header, icol|
 
-        next unless out_header
-
         value = row[icol]
 
         next if value == nil || value == ''
@@ -415,8 +413,6 @@ module Decision
         # just hit the header row
 
       row.each do |cell|
-
-        next unless cell
 
         cell = cell.downcase
 
@@ -565,8 +561,8 @@ module Decision
       # no CSV::Reader for Ruby 1.9.1
 
     csv_lib.parse(csv).inject([]) { |rows, row|
-      row = row.collect { |cell| cell ? cell.strip : nil }
-      rows << row if row.find { |cell| (cell && cell != '') }
+      row = row.collect { |cell| cell ? cell.strip : '' }
+      rows << row if row.find { |cell| (cell != '') }
       rows
     }
   end
