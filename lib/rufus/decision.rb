@@ -314,7 +314,7 @@ module Decision
     #
     def matches? (row, hash)
 
-      @header.ins.each_with_index do |in_header, x|
+      @header.ins.each do |x, in_header|
 
         in_header = "${#{in_header}}"
 
@@ -372,9 +372,9 @@ module Decision
 
     def apply (row, hash)
 
-      @header.outs.each_with_index do |out_header, icol|
+      @header.outs.each do |x, out_header|
 
-        value = row[icol]
+        value = row[x]
 
         next if value == nil || value == ''
 
@@ -516,19 +516,19 @@ module Decision
 
       def initialize
 
-        @ins = []
-        @outs = []
+        @ins = {}
+        @outs = {}
       end
 
-      def add (cell, icol)
+      def add (cell, x)
 
         if cell.match(IN)
 
-          @ins[icol] = cell[3..-1]
+          @ins[x] = cell[3..-1]
 
         elsif cell.match(OUT)
 
-          @outs[icol] = cell[4..-1]
+          @outs[x] = cell[4..-1]
 
         end
         # else don't add
@@ -536,13 +536,8 @@ module Decision
 
       def to_csv
 
-        s = @ins.inject('') do |s, _in|
-          s << "in:#{_in}," if _in; s
-        end
-        s = @outs.inject(s) do |s, out|
-          s << "out:#{out}," if out; s
-        end
-        s[0..-2]
+        (@ins.keys.sort.collect { |k| "in:#{@ins[k]}" } +
+         @outs.keys.sort.collect { |k| "out:#{@outs[k]}" }).join(',')
       end
     end
   end
