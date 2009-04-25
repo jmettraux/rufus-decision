@@ -276,6 +276,8 @@ module Decision
       hash
     end
 
+    alias :run :transform
+
     # Outputs back this table as a CSV String
     #
     def to_csv
