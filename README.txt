@@ -10,10 +10,13 @@ or at
 
 http://rubyforge.org/frs/?group_id=4812
 
+== intro blog post
+
+http://jmettraux.wordpress.com/2009/04/25/rufus-decision-11-ruby-decision-tables/
 
 == usage
 
-more info at http://rufus.rubyforge.org/rufus-decision/classes/Rufus/Decision/Table.html, but here is a recap.
+More info at http://rufus.rubyforge.org/rufus-decision/classes/Rufus/Decision/Table.html but here is a recap.
 
 An example where a few rules determine which salesperson should interact with a customer with given characteristics.
 
