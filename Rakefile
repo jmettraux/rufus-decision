@@ -8,7 +8,6 @@ require 'rake/gempackagetask'
 require 'rake/testtask'
 
 #require 'rake/rdoctask'
-require 'hanna/rdoctask'
 
 
 #
@@ -104,31 +103,20 @@ end
 #
 # DOCUMENTATION
 
-Rake::RDocTask.new do |rd|
-
-  rd.main = 'README.txt'
-  rd.rdoc_dir = 'html/rufus-decision'
-  rd.rdoc_files.include(
-    'README.txt',
-    'CHANGELOG.txt',
-    'LICENSE.txt',
-    'CREDITS.txt',
-    'lib/**/*.rb')
-  #rd.rdoc_files.exclude('lib/tokyotyrant.rb')
-  rd.title = 'rufus-decision rdoc'
-  rd.options << '-N' # line numbers
-  rd.options << '-S' # inline source
-end
-
-task :rrdoc => :rdoc do
-  FileUtils.cp('doc/rdoc-style.css', 'html/rufus-decision/')
+task :rdoc do
+  sh %{
+    rm -fR rdoc
+    yardoc 'lib/**/*.rb' \
+      -o html/rufus-decision \
+      --title 'rufus-decision'
+  }
 end
 
 
 #
 # WEBSITE
 
-task :upload_website => [ :clean, :rrdoc ] do
+task :upload_website => [ :clean, :rdoc ] do
 
   account = 'jmettraux@rubyforge.org'
   webdir = '/var/www/gforge-projects/rufus'
