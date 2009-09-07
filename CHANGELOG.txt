@@ -2,6 +2,11 @@
 = rufus-decision CHANGELOG.txt
 
 
+== rufus-decision - 1.2.0    released 2009/09/07
+
+- issue 1 : made 'bounded' default and added 'unbounded' option
+
+
 == rufus-decision - 1.1    released 2009/04/25
 
 - todo #25670 : :ruby_eval settable at table initialization
