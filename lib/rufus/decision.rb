@@ -371,7 +371,8 @@ module Decision
       modifiers = 0
       modifiers += Regexp::IGNORECASE if @ignore_case
 
-      rcell = Regexp.new(cell, modifiers)
+      #rcell = Regexp.new(cell, modifiers)
+      rcell = Regexp.new("^#{cell}$", modifiers)
 
       rcell.match(value)
     end

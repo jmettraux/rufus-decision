@@ -397,5 +397,20 @@ in:fx,out:fz
     wi = { "fx" => "81" }
     do_test CSV13, wi, { "fz" => "bad" }, false
   end
+
+  CSV14 = %{
+in:fstate,out:result
+apple,1
+orange,2
+}
+
+  def test_bounded_match
+
+    dt = Rufus::DecisionTable.new(CSV14)
+
+    assert_equal(
+      { 'fstate' => 'greenapples' },
+      dt.transform({ 'fstate' => 'greenapples' }))
+  end
 end
 
