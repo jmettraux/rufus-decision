@@ -35,7 +35,7 @@ require 'rufus/hashes'
 module Rufus
 module Decision
 
-  VERSION = '1.1.0'
+  VERSION = '1.2.0'
 
   #
   # A decision table is a description of a set of rules as a CSV (comma

@@ -16,7 +16,7 @@ require 'rake/testtask'
 spec = Gem::Specification.new do |s|
 
   s.name = 'rufus-decision'
-  s.version = '1.1.0'
+  s.version = '1.2.0'
   s.authors = [ 'John Mettraux' ]
   s.email = 'jmettraux@gmail.com'
   s.homepage = 'http://rufus.rubyforge.org/rufus-decision'
@@ -31,13 +31,14 @@ spec = Gem::Specification.new do |s|
   s.has_rdoc = true
   s.extra_rdoc_files = %w{ README.txt CHANGELOG.txt CREDITS.txt }
 
-  %w{ rufus-dollar rufus-treechecker }.each do |d|
+  %w[ rufus-dollar rufus-treechecker ].each do |d|
     s.requirements << d
     s.add_dependency d
   end
 
-  files = FileList[ '{bin,docs,lib,test}/**/*' ]
-  files.exclude('rdoc')
+  #files = FileList[ '{bin,docs,lib,test}/**/*' ]
+  files = FileList[ '{bin,lib,test}/**/*' ]
+  #files.exclude('rdoc')
   s.files = files.to_a
 
   s.bindir = 'bin'
