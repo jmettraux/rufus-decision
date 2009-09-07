@@ -171,6 +171,11 @@ module Decision
   #
   #   will yield { result => [ 'normal', 'large' ]} for f0 => 56
   #
+  # * "unbounded", by default, string matching is 'bounded', "apple" will match
+  #   'apple', but not 'greenapple'. When "unbounded" is set, 'greenapple' will
+  #   match. ('bounded', in reality, means the target value is surrounded
+  #   by ^ and $)
+  #
   # === Setting options at table initialization
   #
   # It's OK to set the options at initialization time :
@@ -250,6 +255,17 @@ module Decision
     #
     attr_accessor :accumulate
 
+    # when set to true, evaluation of ruby code for output is allowed. False
+    # by default.
+    #
+    attr_accessor :ruby_eval
+
+    # false (bounded) by default : exact matches for string matching. When
+    # 'unbounded', target 'apple' will match for values like 'greenapples' or
+    # 'apple seed'.
+    #
+    attr_accessor :unbound
+
     # The constructor for DecisionTable, you can pass a String, an Array
     # (of arrays), a File object. The CSV parser coming with Ruby will take
     # care of it and a DecisionTable instance will be built.
@@ -282,6 +298,7 @@ module Decision
       set_opt(options, :ignore_case, :ignorecase)
       set_opt(options, :accumulate)
       set_opt(options, :ruby_eval)
+      set_opt(options, :unbounded)
 
       @first_match = false if @accumulate
     end
@@ -371,8 +388,8 @@ module Decision
       modifiers = 0
       modifiers += Regexp::IGNORECASE if @ignore_case
 
-      #rcell = Regexp.new(cell, modifiers)
-      rcell = Regexp.new("^#{cell}$", modifiers)
+      rcell = @unbounded ?
+        Regexp.new(cell, modifiers) : Regexp.new("^#{cell}$", modifiers)
 
       rcell.match(value)
     end
@@ -449,6 +466,8 @@ module Decision
         elsif cell == 'accumulate'
           @first_match = false
           @accumulate = true
+        elsif cell == 'unbounded'
+          @unbounded = true
         end
       end
 
