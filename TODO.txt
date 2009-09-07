@@ -2,3 +2,5 @@
 [ ] non csv string representation ?
 [ ] dsl ?
 
+[ ] transform(h, options), :accumulate option ?
+

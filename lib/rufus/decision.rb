@@ -254,29 +254,42 @@ module Decision
     # (of arrays), a File object. The CSV parser coming with Ruby will take
     # care of it and a DecisionTable instance will be built.
     #
-    # parameters (options) are :through, :ignore_case, :accumulate (which
+    # Options are :through, :ignore_case, :accumulate (which
     # forces :through to true when set) and :ruby_eval. See
     # Rufus::Decision::Table for more details.
     #
-    def initialize (csv, params={})
-
-      @first_match = (params[:through] != true)
-      @ignore_case = params[:ignore_case] || params[:ignorecase]
-      @accumulate = params[:accumulate]
-      @ruby_eval = params[:ruby_eval]
-
-      @first_match = false if @accumulate
+    # Options passed to this method do override the options defined
+    # in the CSV itself.
+    #
+    # == options
+    #
+    # * :through : when set, all the rows of the decision table are considered
+    # * :ignore_case : case is ignored (not ignored by default)
+    # * :accumulate : gather instead of overriding (implies :through)
+    # * :ruby_eval : ruby code evaluation is OK
+    #
+    def initialize (csv, options={})
 
       @rows = Rufus::Decision.csv_to_a(csv)
 
       extract_options
+
       parse_header_row
+
+      @first_match = false if options[:through] == true
+      @first_match = true if @first_match.nil?
+
+      set_opt(options, :ignore_case, :ignorecase)
+      set_opt(options, :accumulate)
+      set_opt(options, :ruby_eval)
+
+      @first_match = false if @accumulate
     end
 
     # Like transform, but the original hash doesn't get touched,
     # a copy of it gets transformed and finally returned.
     #
-    def transform (hash, options={})
+    def transform (hash)
 
       transform!(hash.dup)
     end
@@ -284,10 +297,9 @@ module Decision
     # Passes the hash through the decision table and returns it,
     # transformed.
     #
-    def transform! (hash, options={})
+    def transform! (hash)
 
-      hash = Rufus::Decision::EvalHashFilter.new(hash) \
-        if @ruby_eval || options[:ruby_eval] == true
+      hash = Rufus::Decision::EvalHashFilter.new(hash) if @ruby_eval
 
       @rows.each do |row|
         next unless matches?(row, hash)
@@ -304,11 +316,24 @@ module Decision
     #
     def to_csv
 
-      a = [ @header.to_csv ]
-      @rows.inject(a) { |a, row| a << row.join(',') }.join("\n")
+      @rows.inject([ @header.to_csv ]) { |a, row|
+        a << row.join(',')
+      }.join("\n")
     end
 
-    private
+    protected
+
+    def set_opt (options, *optnames)
+
+      optnames.each do |oname|
+
+        v = options[oname]
+        next unless v != nil
+        instance_variable_set("@#{optnames.first.to_s}", v)
+        return
+      end
+    end
+
 
     # Returns true if the hash matches the in: values for this row
     #
@@ -332,7 +357,7 @@ module Decision
         else
 
           range = to_ruby_range(cell)
-          range ? range.include?(value) : regex_compare(value, cell)
+          range ? range.include?(value) : string_compare(value, cell)
         end
 
         return false unless b
@@ -341,7 +366,7 @@ module Decision
       true
     end
 
-    def regex_compare (value, cell)
+    def string_compare (value, cell)
 
       modifiers = 0
       modifiers += Regexp::IGNORECASE if @ignore_case
@@ -435,13 +460,16 @@ module Decision
     # an "out:"
     #
     def is_vertical_table? (first_row)
+
       bin = false
       bout = false
+
       first_row.each do |cell|
         bin ||= cell.match(IN)
         bout ||= cell.match(OUT)
         return false if bin and bout
       end
+
       true
     end
 

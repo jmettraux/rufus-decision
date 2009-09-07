@@ -7,7 +7,7 @@
 
 require 'test/unit'
 
-require File.dirname(__FILE__) + '/test_base.rb'
+require File.join(File.dirname(__FILE__), 'test_base.rb')
 
 
 class Decision1Test < Test::Unit::TestCase
@@ -26,22 +26,26 @@ g,h,${r:'${fx}' + '${fy}'}
   def test_1
 
     wi = { 'fx' => 'c', 'fy' => 'd' }
-    do_test(CSV1, wi, {}, { 'fz' => 'c' }, false)
+    do_test(CSV1, wi, { 'fz' => 'c' }, false)
 
     wi = { 'fx' => 'a', 'fy' => 'a' }
-    do_test(CSV1, wi, {}, { 'fz' => '0' }, false)
+    do_test(CSV1, wi, { 'fz' => '0' }, false)
   end
 
   def test_1b
 
+    table = Rufus::Decision::Table.new(CSV1, :ruby_eval => true)
+
     h = { 'fx' => 'e', 'fy' => 'f' }
-    do_test(CSV1, h, { :ruby_eval => true }, { 'fz' => '7' }, false)
+    do_test(table, h, { 'fz' => '7' }, false)
   end
 
   def test_1c
 
+    table = Rufus::Decision::Table.new(CSV1, :ruby_eval => true)
+
     h = { 'fx' => 'g', 'fy' => 'h' }
-    do_test(CSV1, h, { :ruby_eval => true }, { 'fz' => 'gh' }, false)
+    do_test(table, h, { 'fz' => 'gh' }, false)
   end
 
   CSV2 = [
@@ -55,7 +59,7 @@ g,h,${r:'${fx}' + '${fy}'}
   def test_with_array_table
 
     wi = { 'fx' => 'c', 'fy' => 'd' }
-    do_test(CSV2, wi, {}, { 'fz' => 'c' }, false)
+    do_test(CSV2, wi, { 'fz' => 'c' }, false)
   end
 
   def test_empty_string_to_float
@@ -70,7 +74,7 @@ g,h,${r:'${fx}' + '${fy}'}
       [ '', 'maniac', 'Korolev' ]
     ]
 
-    do_test(table, wi, {}, { 'salesperson' => 'Korolev' }, false)
+    do_test(table, wi, { 'salesperson' => 'Korolev' }, false)
   end
 
   def test_vertical_rules
@@ -78,7 +82,7 @@ g,h,${r:'${fx}' + '${fy}'}
     table = CSV2.transpose
 
     wi = { 'fx' => 'c', 'fy' => 'd' }
-    do_test(table, wi, {}, { 'fz' => 'c' }, false)
+    do_test(table, wi, { 'fz' => 'c' }, false)
   end
 
   def test_vertical_rules_2
@@ -90,7 +94,7 @@ out:team_member,Alice,Bob,Charly,Donald,Ernest,Fujio,Gilbert,Henry,Zach
     }
 
     h = { 'topic' => 'politics', 'region' => 'america' }
-    do_test(table, h, {}, { 'team_member' => 'Gilbert' }, false)
+    do_test(table, h, { 'team_member' => 'Gilbert' }, false)
   end
 
 end

@@ -7,7 +7,7 @@
 
 require 'test/unit'
 
-require File.dirname(__FILE__) + '/test_base.rb'
+require File.join(File.dirname(__FILE__), 'test_base.rb')
 
 
 class Decision0Test < Test::Unit::TestCase
@@ -28,13 +28,13 @@ e,f,2
       "fx" => "c",
       "fy" => "d"
     }
-    do_test(CSV0, wi, {}, { "fz" => "1" }, false)
+    do_test(CSV0, wi, { "fz" => "1" }, false)
 
     wi = {
       "fx" => "a",
       "fy" => "d"
     }
-    do_test(CSV0, wi, {}, { "fz" => nil }, false)
+    do_test(CSV0, wi, { "fz" => nil }, false)
   end
 
   CSV0B = %{
@@ -51,7 +51,7 @@ e,f,2
       "fx" => "c",
       "fy" => "d"
     }
-    do_test(CSV0B, wi, {}, { "fz" => "1" }, false)
+    do_test(CSV0B, wi, { "fz" => "1" }, false)
   end
 
   # test 1 moved to decision_1_test.rb
@@ -67,10 +67,10 @@ e,   f,   2
   def test_2
 
     wi = { "fx" => "c", "fy" => "d" }
-    do_test(CSV2, wi, {}, { "fz" => "1" }, false)
+    do_test(CSV2, wi, { "fz" => "1" }, false)
 
     wi = { "fx" => "a", "fy" => "d" }
-    do_test(CSV2, wi, {}, { "fz" => nil }, false)
+    do_test(CSV2, wi, { "fz" => nil }, false)
   end
 
   CSV3 = %{
@@ -89,19 +89,19 @@ cloudy,   ,     no
       "weather" => "raining",
       "month" => "december"
     }
-    do_test(CSV3, wi, {}, { "take_umbrella?" => "yes" }, false)
+    do_test(CSV3, wi, { "take_umbrella?" => "yes" }, false)
 
     wi = {
       "weather" => "cloudy",
       "month" => "june"
     }
-    do_test(CSV3, wi, {}, { "take_umbrella?" => "yes" }, false)
+    do_test(CSV3, wi, { "take_umbrella?" => "yes" }, false)
 
     wi = {
       "weather" => "cloudy",
       "month" => "march"
     }
-    do_test(CSV3, wi, {}, { "take_umbrella?" => "no" }, false)
+    do_test(CSV3, wi, { "take_umbrella?" => "no" }, false)
   end
 
   def test_3b
@@ -109,17 +109,17 @@ cloudy,   ,     no
     h = {}
     h["weather"] = "raining"
     h["month"] = "december"
-    do_test(CSV3, h, {}, { "take_umbrella?" => "yes" }, false)
+    do_test(CSV3, h, { "take_umbrella?" => "yes" }, false)
 
     h = {}
     h["weather"] = "cloudy"
     h["month"] = "june"
-    do_test(CSV3, h, {}, { "take_umbrella?" => "yes" }, false)
+    do_test(CSV3, h, { "take_umbrella?" => "yes" }, false)
 
     h = {}
     h["weather"] = "cloudy"
     h["month"] = "march"
-    do_test(CSV3, h, {}, { "take_umbrella?" => "no" }, false)
+    do_test(CSV3, h, { "take_umbrella?" => "no" }, false)
   end
 
   def test_3c
@@ -142,35 +142,6 @@ cloudy,   ,     no
     table.transform! h
 
     assert_equal "Henry",  h["team_member"]
-  end
-
-  CSV3D = "http://spreadsheets.google.com/pub?key=pCkopoeZwCNsMWOVeDjR1TQ&output=csv&gid=0"
-
-  def test_3d
-
-    #return unless online?
-
-    h = {}
-    h["weather"] = "raining"
-    h["month"] = "december"
-
-    do_test(CSV3D, h, {}, { "take_umbrella?" => "yes" }, false)
-
-    h = {}
-    h["weather"] = "cloudy"
-    h["month"] = "june"
-
-    sleep 0.5 # don't request the doc too often
-
-    do_test(CSV3D, h, {}, { "take_umbrella?" => "yes" }, false)
-
-    h = {}
-    h["weather"] = "cloudy"
-    h["month"] = "march"
-
-    sleep 0.5 # don't request the doc too often
-
-    do_test(CSV3D, h, {}, { "take_umbrella?" => "no" }, false)
   end
 
   def test_3e
@@ -208,13 +179,13 @@ cloudy,   ,     no
     }
 
     wi = { 'fx' => 'a', 'fy' => 'a' }
-    do_test(table, wi, {}, { 'fX' => 'true', 'fY' => 'true' }, false)
+    do_test(table, wi, { 'fX' => 'true', 'fY' => 'true' }, false)
 
     wi = { 'fx' => 'a', 'fy' => 'b' }
-    do_test(table, wi, {}, { 'fX' => 'true', 'fY' => 'false' }, false)
+    do_test(table, wi, { 'fX' => 'true', 'fY' => 'false' }, false)
 
     wi = { 'fx' => 'A', 'fy' => 'b' }
-    do_test(table, wi, {}, { 'fX' => 'true', 'fY' => 'false' }, false)
+    do_test(table, wi, { 'fX' => 'true', 'fY' => 'false' }, false)
   end
 
   def test_through_and_ignorecase_set_at_table_initialization
@@ -232,13 +203,13 @@ cloudy,   ,     no
       table, :through => true, :ignore_case => true)
 
     wi = { 'fx' => 'a', 'fy' => 'a' }
-    do_test(table, wi, {}, { 'fX' => 'true', 'fY' => 'true' }, false)
+    do_test(table, wi, { 'fX' => 'true', 'fY' => 'true' }, false)
 
     wi = { 'fx' => 'a', 'fy' => 'b' }
-    do_test(table, wi, {}, { 'fX' => 'true', 'fY' => 'false' }, false)
+    do_test(table, wi, { 'fX' => 'true', 'fY' => 'false' }, false)
 
     wi = { 'fx' => 'A', 'fy' => 'b' }
-    do_test(table, wi, {}, { 'fX' => 'true', 'fY' => 'false' }, false)
+    do_test(table, wi, { 'fX' => 'true', 'fY' => 'false' }, false)
   end
 
   #
@@ -258,12 +229,12 @@ in:fx, out:fy
     wi = {
       "fx" => "5"
     }
-    do_test(CSV6, wi, {}, { "fy" => "a" }, false)
+    do_test(CSV6, wi, { "fy" => "a" }, false)
 
     wi = {
       "fx" => "100.0001"
     }
-    do_test(CSV6, wi, {}, { "fy" => "c" }, false)
+    do_test(CSV6, wi, { "fy" => "c" }, false)
   end
 
   #
@@ -283,17 +254,17 @@ in:fx, out:fy
     wi = {
       "fx" => "5"
     }
-    do_test(CSV7, wi, {}, { "fy" => "c" }, false)
+    do_test(CSV7, wi, { "fy" => "c" }, false)
 
     wi = {
       "fx" => "10"
     }
-    do_test(CSV7, wi, {}, { "fy" => "b" }, false)
+    do_test(CSV7, wi, { "fy" => "b" }, false)
 
     wi = {
       "fx" => "10a"
     }
-    do_test(CSV7, wi, {}, { "fy" => "a" }, false)
+    do_test(CSV7, wi, { "fy" => "a" }, false)
   end
 
   CSV8 = %{
@@ -317,16 +288,10 @@ e,f,2
 
   def test_ruby_eval
 
-    wi = { 'fx' => 'c', 'fy' => 'd' }
-    do_test(CSV9, wi, { :ruby_eval => true }, { 'fz' => '3' }, false)
-  end
-
-  def test_ruby_eval_set_at_table_initialization
-
     table = Rufus::Decision::Table.new(CSV9, :ruby_eval => true)
 
     wi = { 'fx' => 'c', 'fy' => 'd' }
-    do_test(table, wi, {}, { 'fz' => '3' }, false)
+    do_test(table, wi, { 'fz' => '3' }, false)
   end
 
   CSV10 = %{
@@ -338,13 +303,13 @@ in:fx,in:fx,out:fz
   def test_10
 
     wi = { "fx" => "91" }
-    do_test(CSV10, wi, {}, { "fz" => "ok" }, false)
+    do_test(CSV10, wi, { "fz" => "ok" }, false)
 
     wi = { "fx" => "95" }
-    do_test(CSV10, wi, {}, { "fz" => "bad" }, false)
+    do_test(CSV10, wi, { "fz" => "bad" }, false)
 
     wi = { "fx" => "81" }
-    do_test(CSV10, wi, {}, { "fz" => "bad" }, false)
+    do_test(CSV10, wi, { "fz" => "bad" }, false)
   end
 
   CSV11 = %{
@@ -361,7 +326,7 @@ in:f1,in:f1,in:f2,in:f3,out:o1,out:e1,out:e2
   def test_fu_zhang
 
     wi = { 'f1' => 97, 'f2' => 5 }
-    do_test CSV11, wi, {}, { 'o1' => 'Expection1' }, false
+    do_test CSV11, wi, { 'o1' => 'Expection1' }, false
   end
 
   CSV12 = %{
@@ -378,14 +343,14 @@ b,   ,    yellow, beige
   def test_accumulate
 
     wi = { "fx" => "a", "fy" => "a" }
-    do_test CSV12, wi, {}, { "fX" => "red;blue", "fY" => "green;purple" }, false
+    do_test CSV12, wi, { "fX" => "red;blue", "fY" => "green;purple" }, false
 
     wi = { "fx" => "a", "fy" => "a", "fX" => "BLACK" }
-    do_test CSV12, wi, {}, {
+    do_test CSV12, wi, {
       "fX" => "BLACK;red;blue", "fY" => "green;purple" }, false
 
     wi = { "fx" => "a", "fy" => "a", "fX" => [ "BLACK", "BLUE" ] }
-    do_test CSV12, wi, {}, {
+    do_test CSV12, wi, {
       "fX" => "BLACK;BLUE;red;blue", "fY" => "green;purple" }, false
   end
 
@@ -424,14 +389,13 @@ in:fx,out:fz
   def test_range
 
     wi = { "fx" => "91" }
-    do_test CSV13, wi, {}, { "fz" => "ok" }, false
+    do_test CSV13, wi, { "fz" => "ok" }, false
 
     wi = { "fx" => "95" }
-    do_test CSV13, wi, {}, { "fz" => "bad" }, false
+    do_test CSV13, wi, { "fz" => "bad" }, false
 
     wi = { "fx" => "81" }
-    do_test CSV13, wi, {}, { "fz" => "bad" }, false
+    do_test CSV13, wi, { "fz" => "bad" }, false
   end
-
 end
 

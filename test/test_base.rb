@@ -14,7 +14,7 @@ module DecisionTestMixin
 
   protected
 
-  def do_test (table_data, h, options, expected_result, verbose=false)
+  def do_test (table_data, h, expected_result, verbose=false)
 
     table = table_data.is_a?(Rufus::Decision::Table) ?
       table_data :
@@ -29,7 +29,7 @@ module DecisionTestMixin
       p h
     end
 
-    h = table.transform!(h, options)
+    h = table.transform!(h)
 
     if verbose
       puts
