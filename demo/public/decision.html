@@ -61,7 +61,6 @@
     }
   </style>
 
-  <script src="js/fluo-json.js"></script>
   <script src="js/ruote-sheets.js"></script>
   <script src="js/request.js"></script>
 </head>
@@ -123,12 +122,12 @@
 
     var data =
       '[' +
-      fluoToJson(RuoteSheets.toArray('sheet_in')) + ',' +
-      fluoToJson(RuoteSheets.toArray('sheet_decision')) +
+      JSON.stringify(RuoteSheets.toArray('sheet_in')) + ',' +
+      JSON.stringify(RuoteSheets.toArray('sheet_decision')) +
       ']';
 
-    var result = httpPost('/decision', data);
-    result = fluoFromJson(result);
+    var result = httpPost('/decide', data);
+    result = JSON.parse(result);
 
     RuoteSheets.render('sheet_out', result);
   }

@@ -1,8 +1,12 @@
 
+[o] move demo to sinatra
+[o] nuke fluo-json in demo
 [x] transform(h, options), :accumulate option ? NO
-
 
 [ ] non csv string representation ?
 [ ] dsl ?
 [ ] ruote participant
+
+[ ] something about demo in README
+[ ] demo/README.txt
 

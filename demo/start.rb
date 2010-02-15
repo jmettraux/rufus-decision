@@ -13,66 +13,65 @@
 # if necessary)
 #
 
-$:.unshift('lib')
+$:.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
 require 'rubygems'
-require 'rack'
 require 'json'
+require 'sinatra'
 require 'rufus/decision'
 
+#class App
+#  def initialize
+#    @rfapp = Rack::File.new(File.dirname(__FILE__) + '/public')
+#  end
+#  def call (env)
+#    return decide(env) if env['PATH_INFO'] == '/decision'
+#    env['PATH_INFO'] = '/index.html' if env['PATH_INFO'] == '/'
+#    @rfapp.call(env)
+#  end
+#  protected
+#  def in_to_h (keys, values)
+#    keys.inject({}) { |h, k| h[k] = values.shift; h }
+#  end
+#  def decide (env)
+#    json = env['rack.input'].read
+#    json = JSON.parse(json)
+#    dt = Rufus::Decision::Table.new(json.last)
+#    input = Rufus::Decision.transpose(json.first)
+#      # from array of arrays to array of hashes
+#    output = input.inject([]) { |a, hash| a << dt.transform(hash); a }
+#    output = Rufus::Decision.transpose(output)
+#      # from array of hashes to array of arrays
+#    [ 200, {}, output.to_json ]
+#  end
+#end
 
-class App
+use Rack::CommonLogger
+use Rack::ShowExceptions
 
-  def initialize
-    @rfapp = Rack::File.new(File.dirname(__FILE__) + '/public')
-  end
+set :public, File.expand_path(File.join(File.dirname(__FILE__), 'public'))
+set :views, File.expand_path(File.join(File.dirname(__FILE__), 'views'))
 
-  def call (env)
-    return decide(env) if env['PATH_INFO'] == '/decision'
-    env['PATH_INFO'] = '/index.html' if env['PATH_INFO'] == '/'
-    @rfapp.call(env)
-  end
+get '/' do
 
-  protected
-
-  def in_to_h (keys, values)
-    keys.inject({}) { |h, k| h[k] = values.shift; h }
-  end
-
-  def decide (env)
-
-    json = env['rack.input'].read
-    json = JSON.parse(json)
-
-    dt = Rufus::Decision::Table.new(json.last)
-
-    input = Rufus::Decision.transpose(json.first)
-      # from array of arrays to array of hashes
-
-    output = input.inject([]) { |a, hash| a << dt.transform(hash); a }
-
-    output = Rufus::Decision.transpose(output)
-      # from array of hashes to array of arrays
-
-    [ 200, {}, output.to_json ]
-  end
+  redirect '/decision.html'
 end
 
-b = Rack::Builder.new do
+post '/decide' do
 
-  use Rack::CommonLogger
-  use Rack::ShowExceptions
-  run App.new
-end
+  json = env['rack.input'].read
+  json = JSON.parse(json)
 
-port = 4567
+  dt = Rufus::Decision::Table.new(json.last)
+  input = Rufus::Decision.transpose(json.first)
+    # from array of arrays to array of hashes
 
-puts ".. [#{Time.now}] listening on port #{port}"
+  output = input.inject([]) { |a, hash| a << dt.transform(hash); a }
+  output = Rufus::Decision.transpose(output)
+    # from array of hashes to array of arrays
 
-Rack::Handler::Mongrel.run(b, :Port => port) do |server|
-  trap(:INT) do
-    puts ".. [#{Time.now}] stopped."
-    server.stop
-  end
+  response.headers['Content-Type'] = 'application/json'
+
+  output.to_json
 end
 
