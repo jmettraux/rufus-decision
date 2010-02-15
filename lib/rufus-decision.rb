@@ -1,3 +1,3 @@
 
-require 'rufus/decision'
+require 'rufus/decision/table'
 

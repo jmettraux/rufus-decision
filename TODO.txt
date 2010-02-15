@@ -1,6 +1,8 @@
 
+[x] transform(h, options), :accumulate option ? NO
+
+
 [ ] non csv string representation ?
 [ ] dsl ?
-
-[x] transform(h, options), :accumulate option ? NO
+[ ] ruote participant
 

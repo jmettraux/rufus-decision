@@ -9,7 +9,7 @@ require 'test/unit'
 
 require File.dirname(__FILE__) + '/test_base.rb'
 
-require 'rufus/hashes'
+require 'rufus/decision/hashes'
 
 
 class EvalTest < Test::Unit::TestCase

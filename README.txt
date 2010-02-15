@@ -4,15 +4,13 @@
 
 == getting it
 
-  sudo gem install -y rufus-decision
+  gem install rufus-decision
 
-or at
-
-http://rubyforge.org/frs/?group_id=4812
 
 == intro blog post
 
 http://jmettraux.wordpress.com/2009/04/25/rufus-decision-11-ruby-decision-tables/
+
 
 == usage
 
@@ -102,7 +100,7 @@ WARNING though : use at your own risk. CSV loaded from untrusted locations may c
 
 == uninstalling it
 
-    sudo gem uninstall -y rufus-decision
+  gem uninstall rufus-decision
 
 
 == dependencies

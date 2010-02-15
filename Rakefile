@@ -1,123 +1,76 @@
 
+
+require 'lib/rufus/decision/version.rb'
+
 require 'rubygems'
-
 require 'rake'
+
+
+#
+# CLEAN
+
 require 'rake/clean'
-require 'rake/packagetask'
-require 'rake/gempackagetask'
-require 'rake/testtask'
-
-#require 'rake/rdoctask'
+CLEAN.include('pkg', 'tmp', 'html')
+task :default => [ :clean ]
 
 
 #
-# GEM SPEC
+# GEM
 
-spec = Gem::Specification.new do |s|
+require 'jeweler'
 
-  s.name = 'rufus-decision'
-  s.version = '1.2.0'
-  s.authors = [ 'John Mettraux' ]
-  s.email = 'jmettraux@gmail.com'
-  s.homepage = 'http://rufus.rubyforge.org/rufus-decision'
-  s.platform = Gem::Platform::RUBY
-  s.summary = 'CSV based Ruby decision tables'
-  #s.license = 'MIT'
-  s.rubyforge_project = 'rufus'
+Jeweler::Tasks.new do |gem|
 
-  s.require_path = 'lib'
-  #s.autorequire = 'rufus-decision'
-  s.test_file = 'test/test.rb'
-  s.has_rdoc = true
-  s.extra_rdoc_files = %w{ README.txt CHANGELOG.txt CREDITS.txt }
+  gem.version = Rufus::Decision::VERSION
+  gem.name = 'rufus-decision'
+  gem.summary = 'CSV based Ruby decision tables'
 
-  %w[ rufus-dollar rufus-treechecker ].each do |d|
-    s.requirements << d
-    s.add_dependency d
-  end
-
-  #files = FileList[ '{bin,docs,lib,test}/**/*' ]
-  files = FileList[ '{bin,lib,test}/**/*' ]
-  #files.exclude('rdoc')
-  s.files = files.to_a
-
-  s.bindir = 'bin'
-  s.executables << 'rufus_decide'
-end
-
-#
-# tasks
-
-CLEAN.include('pkg', 'html')
-
-task :default => [ :clean, :repackage ]
-
-
-#
-# TESTING
-
-Rake::TestTask.new(:test) do |t|
-  t.libs << 'test'
-  t.test_files = FileList['test/test.rb']
-  t.verbose = true
-end
-
-
-#
-# VERSION
-
-task :change_version do
-
-  version = ARGV.pop
-  `sedip "s/VERSION = '.*'/VERSION = '#{version}'/" lib/rufus/decision.rb`
-  `sedip "s/^  s.version = '.*'/  s.version = '#{version}'/" Rakefile`
-  exit 0 # prevent rake from triggering other tasks
-end
-
-
-#
-# PACKAGING
-
-Rake::GemPackageTask.new(spec) do |pkg|
-  #pkg.need_tar = true
-end
-
-Rake::PackageTask.new('rufus-decision', spec.version) do |pkg|
-
-  pkg.need_zip = true
-  pkg.package_files = FileList[
-    'Rakefile',
-    '*.txt',
-    'lib/**/*',
-    'bin/**/*',
-    'test/**/*'
-  ].to_a
-  #pkg.package_files.delete("MISC.txt")
-  class << pkg
-    def package_name
-      "#{@name}-#{@version}-src"
-    end
-  end
-end
-
-
-#
-# DOCUMENTATION
-
-task :rdoc do
-  sh %{
-    rm -fR rdoc
-    yardoc 'lib/**/*.rb' \
-      -o html/rufus-decision \
-      --title 'rufus-decision'
+  gem.description = %{
+CSV based Ruby decision tables
   }
+  gem.email = 'jmettraux@gmail.com'
+  gem.homepage = 'http://github.com/jmettraux/rufus-decision/'
+  gem.authors = [ 'John Mettraux' ]
+  gem.rubyforge_project = 'rufus'
+
+  gem.test_file = 'test/test.rb'
+
+  gem.add_dependency 'rufus-dollar'
+  gem.add_dependency 'rufus-treechecker'
+  gem.add_development_dependency 'yard'
+  gem.add_development_dependency 'jeweler'
+
+  # gemspec spec : http://www.rubygems.org/read/chapter/20
+end
+Jeweler::GemcutterTasks.new
+
+
+#
+# DOC
+
+begin
+
+  require 'yard'
+
+  YARD::Rake::YardocTask.new do |doc|
+    doc.options = [
+      '-o', 'html/rufus-decision', '--title',
+      "rufus-decision #{Rufus::Decision::VERSION}"
+    ]
+  end
+
+rescue LoadError
+
+  task :yard do
+    abort "YARD is not available : sudo gem install yard"
+  end
 end
 
 
 #
-# WEBSITE
+# TO THE WEB
 
-task :upload_website => [ :clean, :rdoc ] do
+task :upload_website => [ :clean, :yard ] do
 
   account = 'jmettraux@rubyforge.org'
   webdir = '/var/www/gforge-projects/rufus'
