@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{rufus-decision}
-  s.version = "1.3.0"
+  s.version = "1.3.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["John Mettraux"]
-  s.date = %q{2010-02-15}
+  s.date = %q{2010-02-16}
   s.default_executable = %q{rufus_decide}
   s.description = %q{
 CSV based Ruby decision tables
@@ -18,43 +18,45 @@ CSV based Ruby decision tables
   s.executables = ["rufus_decide"]
   s.extra_rdoc_files = [
     "LICENSE.txt",
-     "README.txt"
+     "README.rdoc"
   ]
   s.files = [
     "CHANGELOG.txt",
      "CREDITS.txt",
      "LICENSE.txt",
-     "README.txt",
+     "README.rdoc",
      "Rakefile",
      "TODO.txt",
      "bin/rufus_decide",
+     "demo/README.txt",
+     "demo/public/decision.html",
      "demo/public/decision.js",
      "demo/public/images/arrow.png",
      "demo/public/images/ruse_head_bg.png",
      "demo/public/in.js",
-     "demo/public/index.html",
-     "demo/public/js/fluo-json.js",
      "demo/public/js/request.js",
      "demo/public/js/ruote-sheets.js",
      "demo/start.rb",
+     "examples/journalists.rb",
      "examples/readme_example.rb",
+     "examples/reimbursement.csv",
      "lib/rufus-decision.rb",
      "lib/rufus/decision.rb",
      "lib/rufus/decision/hashes.rb",
      "lib/rufus/decision/table.rb",
      "lib/rufus/decision/version.rb",
      "rufus-decision.gemspec",
-     "test/decision_0_test.rb",
-     "test/decision_1_test.rb",
-     "test/decision_2_test.rb",
-     "test/decision_3_test.rb",
-     "test/eval_test.rb",
+     "test/dt_0_basic.rb",
+     "test/dt_1_vertical.rb",
+     "test/dt_2_google.rb",
+     "test/dt_3_bounded.rb",
+     "test/dt_4_eval.rb",
+     "test/dt_5_transpose.rb",
      "test/goal.csv",
      "test/input.csv",
      "test/table.csv",
      "test/test.rb",
-     "test/test_base.rb",
-     "test/transpose_test.rb"
+     "test/test_base.rb"
   ]
   s.homepage = %q{http://github.com/jmettraux/rufus-decision/}
   s.rdoc_options = ["--charset=UTF-8"]

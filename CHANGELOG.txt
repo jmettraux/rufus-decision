@@ -2,6 +2,9 @@
 = rufus-decision CHANGELOG.txt
 
 
+== rufus-decision - 1.3.1    not yet released
+
+
 == rufus-decision - 1.3.0    released 2010/02/15
 
 - removing 'require "rubygems"' from lib/ (argh)
