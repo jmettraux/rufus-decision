@@ -1,16 +1,14 @@
 
 #
-# Testing rufus-deciision
+# testing rufus-deciision
 #
 # Sun Oct 29 15:41:44 JST 2006
 #
 
-require 'test/unit'
-
 require File.join(File.dirname(__FILE__), 'test_base.rb')
 
 
-class Decision1Test < Test::Unit::TestCase
+class Dt1Test < Test::Unit::TestCase
   include DecisionTestMixin
 
   CSV1 = %{
@@ -96,6 +94,5 @@ out:team_member,Alice,Bob,Charly,Donald,Ernest,Fujio,Gilbert,Henry,Zach
     h = { 'topic' => 'politics', 'region' => 'america' }
     do_test(table, h, { 'team_member' => 'Gilbert' }, false)
   end
-
 end
 

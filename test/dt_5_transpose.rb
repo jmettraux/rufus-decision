@@ -1,16 +1,14 @@
 
 #
-# Testing rufus-decision
+# testing rufus-decision
 #
 # Thu Apr 23 15:18:15 JST 2009
 #
 
-require 'test/unit'
-
 require File.dirname(__FILE__) + '/test_base.rb'
 
 
-class MiscTest < Test::Unit::TestCase
+class Dt5Test < Test::Unit::TestCase
 
   def test_transpose_empty_array
 
@@ -62,3 +60,4 @@ class MiscTest < Test::Unit::TestCase
     )
   end
 end
+

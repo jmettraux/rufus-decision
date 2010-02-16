@@ -1,16 +1,14 @@
 
 #
-# Testing rufus-decision
+# testing rufus-decision
 #
 # Sun Oct 29 15:41:44 JST 2006
 #
 
-require 'test/unit'
-
 require File.join(File.dirname(__FILE__), 'test_base.rb')
 
 
-class Decision0Test < Test::Unit::TestCase
+class Dt0Test < Test::Unit::TestCase
   include DecisionTestMixin
 
   CSV0 = %{

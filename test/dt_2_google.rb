@@ -1,16 +1,14 @@
 
 #
-# Testing rufus-decision
+# testing rufus-decision
 #
 # Sun Oct 29 15:41:44 JST 2006
 #
 
-require 'test/unit'
-
 require File.join(File.dirname(__FILE__), 'test_base.rb')
 
 
-class Decision2Test < Test::Unit::TestCase
+class Dt2Test < Test::Unit::TestCase
   include DecisionTestMixin
 
   CSV3D = "http://spreadsheets.google.com/pub?key=pCkopoeZwCNsMWOVeDjR1TQ&output=csv&gid=0"
