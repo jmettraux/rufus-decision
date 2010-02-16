@@ -43,9 +43,11 @@ CSV based Ruby decision tables
      "lib/rufus-decision.rb",
      "lib/rufus/decision.rb",
      "lib/rufus/decision/hashes.rb",
+     "lib/rufus/decision/participant.rb",
      "lib/rufus/decision/table.rb",
      "lib/rufus/decision/version.rb",
      "rufus-decision.gemspec",
+     "test/base.rb",
      "test/dt_0_basic.rb",
      "test/dt_1_vertical.rb",
      "test/dt_2_google.rb",
@@ -54,9 +56,11 @@ CSV based Ruby decision tables
      "test/dt_5_transpose.rb",
      "test/goal.csv",
      "test/input.csv",
+     "test/ruote/base.rb",
+     "test/ruote/rt_0_basic.rb",
+     "test/ruote/test.rb",
      "test/table.csv",
-     "test/test.rb",
-     "test/test_base.rb"
+     "test/test.rb"
   ]
   s.homepage = %q{http://github.com/jmettraux/rufus-decision/}
   s.rdoc_options = ["--charset=UTF-8"]

@@ -4,8 +4,8 @@
 [x] transform(h, options), :accumulate option ? NO
 [o] something about demo in README
 [o] demo/README.txt
+[o] ruote participant
 
 [ ] non csv string representation ? JSON ?
 [ ] dsl ?
-[ ] ruote participant
 

@@ -28,6 +28,50 @@ require 'ruote/participant'
 
 module Rufus::Decision
 
+  #
+  # Decision participants were named 'CSV participants' prior to ruote 2.1.
+  #
+  # Make sure you have the gem "rufus-decision" installed in order to
+  # use this decision participant.
+  #
+  # In this example, a participant named 'decide_team_member' is bound in the
+  # ruote engine and, depending on the value of the workitem fields 'topic'
+  # and region, sets the value of the field named 'team_member' :
+  #
+  #   require 'rufus/decision/participant'
+  #
+  #   engine.register_participant(
+  #     :decide_team_member
+  #     Rufus::Decision::Participant, :table => %{
+  #       in:topic,in:region,out:team_member
+  #       sports,europe,Alice
+  #       sports,,Bob
+  #       finance,america,Charly
+  #       finance,europe,Donald
+  #       finance,,Ernest
+  #       politics,asia,Fujio
+  #       politics,america,Gilbert
+  #       politics,,Henry
+  #       ,,Zach
+  #     })
+  #
+  #   pdef = Ruote.process_definition :name => 'dec-test', :revision => '1' do
+  #     sequence do
+  #       decide_team_member
+  #       participant :ref => '${team_member}'
+  #     end
+  #   end
+  #
+  # A process instance about the election results in Venezuela :
+  #
+  #   engine.launch(
+  #     pdef,
+  #     'topic' => 'politics',
+  #     'region' => 'america',
+  #     'line' => 'election results in Venezuela')
+  #
+  # would thus get routed to Gilbert.
+  #
   class Participant
     include Ruote::LocalParticipant
 

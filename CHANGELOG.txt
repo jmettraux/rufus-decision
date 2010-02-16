@@ -4,6 +4,8 @@
 
 == rufus-decision - 1.3.1    not yet released
 
+- implemented Rufus::Decision::Participant, a ruote participant
+
 
 == rufus-decision - 1.3.0    released 2010/02/15
 
