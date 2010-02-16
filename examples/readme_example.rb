@@ -2,10 +2,7 @@
 require 'rubygems'
 require 'rufus/decision'
 
-include Rufus
-
-
-TABLE = DecisionTable.new("""
+TABLE = Rufus::Decision::Table.new(%{
 in:age,in:trait,out:salesperson
 
 18..35,,adeslky
@@ -17,11 +14,10 @@ in:age,in:trait,out:salesperson
 25..35,rich,kerfelden
 ,cheerful,swanson
 ,maniac,korolev
-""")
+})
 
-#
-# Given a customer (a Hash instance directly, for 
-# convenience), returns the name of the first 
+# Given a customer (a Hash instance directly, for
+# convenience), returns the name of the first
 # corresponding salesman.
 #
 def determine_salesperson (customer)

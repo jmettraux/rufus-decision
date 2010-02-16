@@ -1,0 +1,12 @@
+in:deductible met ?,in:type of visit,in:participating physician ?,out:reimbursement
+yes,doctor office,yes,90%
+yes,doctor office,no,50%
+yes,hospital visit,yes,n/a
+yes,hospital visit,no,80%
+yes,lab visit,yes,n/a
+yes,lab visit,no,70%
+no,doctor office,no,0%
+no,hospital visit,yes,n/a
+no,hospital visit,no,0%
+no,lab visit,yes,n/a
+no,lab visit,no,0%

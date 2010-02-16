@@ -347,7 +347,6 @@ module Decision
       end
     end
 
-
     # Returns true if the hash matches the in: values for this row
     #
     def matches? (row, hash)
@@ -662,7 +661,6 @@ module Decision
       }
     end
   end
-
 end
 end
 
