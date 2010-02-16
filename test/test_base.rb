@@ -1,6 +1,6 @@
 
 #
-# Testing rufus-decision
+# testing rufus-decision
 #
 # 2007 something
 #
