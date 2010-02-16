@@ -9,3 +9,5 @@
 [ ] non csv string representation ? JSON ?
 [ ] dsl ?
 
+[ ] rufus-jig for GETting the table (304 ftw)
+
