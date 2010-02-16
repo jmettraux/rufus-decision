@@ -5,7 +5,7 @@
 # Mon Oct  9 22:19:44 JST 2006
 #
 
-require File.dirname(__FILE__) + '/test_base.rb'
+require File.join(File.dirname(__FILE__), 'base.rb')
 
 require 'rufus/decision/hashes'
 

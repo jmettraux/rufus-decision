@@ -5,7 +5,7 @@
 # Thu Apr 23 15:18:15 JST 2009
 #
 
-require File.dirname(__FILE__) + '/test_base.rb'
+require File.join(File.dirname(__FILE__), 'base.rb')
 
 
 class Dt5Test < Test::Unit::TestCase
