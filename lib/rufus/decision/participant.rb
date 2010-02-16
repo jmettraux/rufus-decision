@@ -72,6 +72,25 @@ module Rufus::Decision
   #
   # would thus get routed to Gilbert.
   #
+  # To learn more about decision tables :
+  #
+  #   http://github.com/jmettraux/rufus-decision
+  #
+  # Note that you can reference the table by its URI :
+  #
+  #   engine.register_participant(
+  #     :decide_team_member
+  #     Rufus::Decision::Participant,
+  #     :table => 'http://decisions.example.com/journalists.csv')
+  #
+  # If the table were a Google Spreadsheet, it would look like (note the
+  # trailing &output=csv) :
+  #
+  #   engine.register_participant(
+  #     :decide_team_member
+  #     Rufus::Decision::Participant,
+  #     :table => 'http://spreadsheets.google.com/pub?key=pCZNVR1TQ&output=csv')
+  #
   class Participant
     include Ruote::LocalParticipant
 
