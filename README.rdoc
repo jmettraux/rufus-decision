@@ -14,7 +14,7 @@ http://jmettraux.wordpress.com/2009/04/25/rufus-decision-11-ruby-decision-tables
 
 == usage
 
-More info at http://rufus.rubyforge.org/rufus-decision/classes/Rufus/Decision/Table.html but here is a recap.
+More info at http://rufus.rubyforge.org/rufus-decision/Rufus/Decision/Table.html but here is a recap.
 
 An example where a few rules determine which salesperson should interact with a customer with given characteristics.
 
@@ -96,6 +96,18 @@ Note that you can use a CSV table served over HTTP like in :
 In this example, the CSV table is the direction CSV representation of the Google spreadsheet at : http://spreadsheets.google.com/pub?key=pCkopoeZwCNsMWOVeDjR1TQ
 
 WARNING though : use at your own risk. CSV loaded from untrusted locations may contain harmful code. The rufus-decision gem has an abstract tree checker integrated, it will check all the CSVs that contain calls in Ruby and raise a security error when possibly harmful code is spotted. Bullet vs Armor. Be warned.
+
+
+== web demo
+
+There is a small demo of an input table + a decision table. You can run it by doing :
+
+  gem install sinatra
+  git clone git://github.com/jmettraux/rufus-decision.git
+  cd rufus-decision
+  ruby demo/start.rb
+
+and then point your browser to http://localost:4567/
 
 
 == uninstalling it

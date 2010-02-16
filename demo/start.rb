@@ -50,7 +50,7 @@ use Rack::CommonLogger
 use Rack::ShowExceptions
 
 set :public, File.expand_path(File.join(File.dirname(__FILE__), 'public'))
-set :views, File.expand_path(File.join(File.dirname(__FILE__), 'views'))
+#set :views, File.expand_path(File.join(File.dirname(__FILE__), 'views'))
 
 get '/' do
 
