@@ -37,6 +37,7 @@ CSV based Ruby decision tables
 
   gem.add_dependency 'rufus-dollar'
   gem.add_dependency 'rufus-treechecker'
+  gem.add_development_dependency 'rake'
   gem.add_development_dependency 'yard'
   gem.add_development_dependency 'jeweler'
   #gem.add_development_dependency 'ruote', '>= 2.1.7'
