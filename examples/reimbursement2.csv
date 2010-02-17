@@ -1,0 +1,7 @@
+in:type of visit,in:participating physician ?,out:reimbursement
+doctor office,yes,90%
+doctor office,no,50%
+hospital visit,yes,0%
+hospital visit,no,80%
+lab visit,yes,0%
+lab visit,no,70%
