@@ -7,9 +7,12 @@
   gem install rufus-decision
 
 
-== intro blog post
+== blog posts
 
 http://jmettraux.wordpress.com/2009/04/25/rufus-decision-11-ruby-decision-tables/
+
+http://jmettraux.wordpress.com/2010/02/17/ruote-and-decision-tables/
+
 
 
 == usage

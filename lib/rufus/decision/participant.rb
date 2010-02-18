@@ -34,6 +34,17 @@ module Rufus::Decision
   # Make sure you have the gem "rufus-decision" installed in order to
   # use this decision participant.
   #
+  #
+  # == blog post
+  #
+  # This Rufus::Decision::Participant was introduced in the "ruote and
+  # decision tables" blog post :
+  #
+  # http://jmettraux.wordpress.com/2010/02/17/ruote-and-decision-tables/
+  #
+  #
+  # == example
+  #
   # In this example, a participant named 'decide_team_member' is bound in the
   # ruote engine and, depending on the value of the workitem fields 'topic'
   # and region, sets the value of the field named 'team_member' :
@@ -74,7 +85,10 @@ module Rufus::Decision
   #
   # To learn more about decision tables :
   #
-  #   http://github.com/jmettraux/rufus-decision
+  # http://github.com/jmettraux/rufus-decision
+  #
+  #
+  # == pointing to a table via a URI
   #
   # Note that you can reference the table by its URI :
   #
