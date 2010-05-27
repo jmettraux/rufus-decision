@@ -118,7 +118,7 @@ module Rufus::Decision
       table = @options['table']
       raise(ArgumentError.new("'table' option is missing")) unless table
 
-      table = Rufus::Decision::Table.new(table)
+      table = Rufus::Decision::Table.new(table, @options)
 
       workitem.fields = table.run(workitem.fields)
 
