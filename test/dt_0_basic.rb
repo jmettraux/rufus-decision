@@ -292,6 +292,14 @@ e,f,2
     do_test(table, wi, { 'fz' => '3' }, false)
   end
 
+  def test_ruby_eval_string_key
+
+    table = Rufus::Decision::Table.new(CSV9, 'ruby_eval' => true)
+
+    wi = { 'fx' => 'c', 'fy' => 'd' }
+    do_test(table, wi, { 'fz' => '3' }, false)
+  end
+
   CSV10 = %{
 in:fx,in:fx,out:fz
 >90,<92,ok

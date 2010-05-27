@@ -340,7 +340,9 @@ module Decision
 
       optnames.each do |oname|
 
-        v = options[oname]
+        oname = oname.to_s
+
+        v = options[oname.intern] || options[oname]
         next unless v != nil
         instance_variable_set("@#{optnames.first.to_s}", v)
         return
