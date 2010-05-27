@@ -3,6 +3,7 @@
 
 == Feedback
 
+- Wes Gamble
 - ocgarlan
 - Fu Zhang
 
