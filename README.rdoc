@@ -1,4 +1,3 @@
-
 = rufus-decision
 
 
@@ -110,7 +109,7 @@ There is a small demo of an input table + a decision table. You can run it by do
   cd rufus-decision
   ruby demo/start.rb
 
-and then point your browser to http://localost:4567/
+and then point your browser to http://localhost:4567/
 
 
 == uninstalling it
