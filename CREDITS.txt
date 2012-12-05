@@ -1,6 +1,12 @@
 
 = CREDITS.txt
 
+
+== Contributors
+
+- Rob S - https://github.com/qnm
+
+
 == Feedback
 
 - Wes Gamble
