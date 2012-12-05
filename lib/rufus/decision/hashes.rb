@@ -125,11 +125,11 @@ module Decision
   # Implements the r:, ruby: and reval: prefixes in lookups
   #
   #   require 'rubygems'
-  #   require 'rufus/hashes'
+  #   require 'rufus/decision/hashes'
   #
   #   h = {}
   #
-  #   eh = Rufus::EvalHashFilter.new(h, 0)
+  #   eh = Rufus::Decision::EvalHashFilter.new(h)
   #
   #   eh['a'] = :a
   #   p h # => { 'a' => :a }
