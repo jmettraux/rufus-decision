@@ -4,6 +4,7 @@
 
 == Contributors
 
+- Michael Johnston - https://github.com/lastobelus
 - Rob S - https://github.com/qnm
 
 
