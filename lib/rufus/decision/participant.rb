@@ -108,12 +108,12 @@ module Rufus::Decision
   class Participant
     include Ruote::LocalParticipant
 
-    def initialize (opts={})
+    def initialize(opts={})
 
       @options = opts
     end
 
-    def consume (workitem)
+    def consume(workitem)
 
       table = @options['table']
       raise(ArgumentError.new("'table' option is missing")) unless table
