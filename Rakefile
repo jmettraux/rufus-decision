@@ -1,82 +1,65 @@
 
-
-require_relative 'lib/rufus/decision/version.rb'
+$:.unshift('.') # 1.9.2
 
 require 'rubygems'
+
 require 'rake'
-
-
-#
-# CLEAN
-
 require 'rake/clean'
-CLEAN.include('pkg', 'tmp', 'html')
-task :default => [ :clean ]
 
 
 #
-# GEM
+# clean
 
-require 'jeweler'
-
-Jeweler::Tasks.new do |gem|
-
-  gem.version = Rufus::Decision::VERSION
-  gem.name = 'rufus-decision'
-  gem.summary = 'CSV based Ruby decision tables'
-
-  gem.description = %{
-CSV based Ruby decision tables
-  }
-  gem.email = 'jmettraux@gmail.com'
-  gem.homepage = 'http://github.com/jmettraux/rufus-decision/'
-  gem.authors = [ 'John Mettraux' ]
-  gem.rubyforge_project = 'rufus'
-
-  gem.test_file = 'test/test.rb'
-
-  gem.add_dependency 'rufus-dollar'
-  gem.add_dependency 'rufus-treechecker'
-  gem.add_development_dependency 'rake'
-  gem.add_development_dependency 'yard'
-  gem.add_development_dependency 'jeweler'
-  #gem.add_development_dependency 'ruote', '>= 2.1.7'
-
-  # gemspec spec : http://www.rubygems.org/read/chapter/20
-end
-Jeweler::GemcutterTasks.new
+CLEAN.include('pkg')
 
 
 #
-# DOC
+# test / spec
 
-begin
+task :test do
 
-  require 'yard'
-
-  YARD::Rake::YardocTask.new do |doc|
-    doc.options = [
-      '-o', 'html/rufus-decision', '--title',
-      "rufus-decision #{Rufus::Decision::VERSION}"
-    ]
-  end
-
-rescue LoadError
-
-  task :yard do
-    abort "YARD is not available : sudo gem install yard"
-  end
+  exec 'bundle exec ruby test/test.rb'
 end
+
+task :default => [ :spec ]
+task :spec => [ :test ]
 
 
 #
-# TO THE WEB
+# gem
 
-task :upload_website => [ :clean, :yard ] do
+GEMSPEC_FILE = Dir['*.gemspec'].first
+GEMSPEC = eval(File.read(GEMSPEC_FILE))
+GEMSPEC.validate
 
-  account = 'jmettraux@rubyforge.org'
-  webdir = '/var/www/gforge-projects/rufus'
 
-  sh "rsync -azv -e ssh html/rufus-decision #{account}:#{webdir}/"
+desc %{
+  builds the gem and places it in pkg/
+}
+task :build do
+
+  sh "gem build #{GEMSPEC_FILE}"
+  sh "mkdir pkg" rescue nil
+  sh "mv #{GEMSPEC.name}-#{GEMSPEC.version}.gem pkg/"
 end
+
+desc %{
+  builds the gem and pushes it to rubygems.org
+}
+task :push => :build do
+
+  sh "gem push pkg/#{GEMSPEC.name}-#{GEMSPEC.version}.gem"
+end
+
+
+##
+## TO THE WEB
+#
+#task :upload_website => [ :clean, :yard ] do
+#
+#  account = 'jmettraux@rubyforge.org'
+#  webdir = '/var/www/gforge-projects/rufus'
+#
+#  sh "rsync -azv -e ssh html/rufus-decision #{account}:#{webdir}/"
+#end
 
