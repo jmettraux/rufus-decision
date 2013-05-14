@@ -2,13 +2,6 @@
 
 Add a set logic matcher which allows a decision table cell to match based on set logic between the decision table and the corresponding entry in the hash being transformed.
 
-# Decision Table Syntax
-
-1. The set logic matcher would apply to any cell matching the regex 
-
-  ```ruby
-  /^\$\((.*)\)/
-  ```
 
 ## Set Conversion on input hash
 
@@ -23,6 +16,14 @@ Add a set logic matcher which allows a decision table cell to match based on set
         'bob, mary', jeff) => Set["bob, mary", "jeff"]
 
 ## Decision Table Cell Syntax
+
+1. The set logic matcher would apply to any cell matching the regex 
+
+  ```ruby
+  /^\$\((.*)\)/
+  ```
+set logic expressions could contain:
+
         $in                 => the hash element with this column name, with set conversion applied
         $(${c1})            => the hash element named c1, with set conversion applied
         $(${in:c1})         => the row element named in:c1, assumed to be Decision Table Cell Syntax
