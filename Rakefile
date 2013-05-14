@@ -1,6 +1,6 @@
 
 
-require 'lib/rufus/decision/version.rb'
+require_relative 'lib/rufus/decision/version.rb'
 
 require 'rubygems'
 require 'rake'

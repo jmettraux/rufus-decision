@@ -25,6 +25,7 @@
 
 require 'csv'
 require 'open-uri'
+require 'open_uri_redirections'
 
 require 'rufus/dollar'
 require 'rufus/decision/hashes'
@@ -595,7 +596,7 @@ module Decision
     return csv if csv.is_a?(Array)
 
     csv = csv.to_s if csv.is_a?(URI)
-    csv = open(csv) if is_uri?(csv)
+    csv = open(csv, allow_redirections: :safe) if is_uri?(csv)
 
     csv_lib = defined?(CSV::Reader) ? CSV::Reader : CSV
       # no CSV::Reader for Ruby 1.9.1
