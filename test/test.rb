@@ -1,4 +1,4 @@
-
+$:.unshift File.dirname(File.dirname(__FILE__))
 #
 # testing rufus-decision
 #
