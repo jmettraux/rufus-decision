@@ -2,6 +2,9 @@
 = rufus-decision CHANGELOG.txt
 
 
+== rufus-decision - 1.3.3    not yet released
+
+
 == rufus-decision - 1.3.2    released 2010/05/28
 
 - ruote participant : passing the participant options to the decision table
