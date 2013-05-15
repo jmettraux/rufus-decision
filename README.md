@@ -1,6 +1,8 @@
 
 # rufus-decision
 
+[![Build Status](https://secure.travis-ci.org/jmettraux/rufus-decision.png)](http://travis-ci.org/jmettraux/rufus-decision)
+
 CSV based Ruby decision tables
 
 
