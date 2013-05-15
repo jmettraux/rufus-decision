@@ -362,10 +362,7 @@ b,   ,    yellow, beige
 
   def test_to_ruby_range
 
-    dt = Rufus::DecisionTable.new ",\n,"
-    class << dt
-      public :to_ruby_range
-    end
+    dt = Rufus::Decision::Matchers::Range.new
 
     assert_not_nil dt.to_ruby_range("99..100")
     assert_not_nil dt.to_ruby_range("99...100")

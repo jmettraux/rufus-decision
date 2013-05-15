@@ -22,26 +22,40 @@
 # Made in Japan.
 #++
 
+require 'rufus/decision/matcher'
 
 module Rufus
   module Decision
-    class Matcher
+    module Matchers
+      class Numeric < Matcher
+        NUMERIC_COMPARISON = /^([><]=?)(.*)$/
 
-      attr_accessor :options
-      
-      def initialize(options={})
-        @options = options
+        def matches?(cell, value)
+          match = NUMERIC_COMPARISON.match(cell)
+          return false if match.nil?
+
+          comparator = match[1]
+          cell = match[2]
+
+          nvalue = Float(value) rescue value
+          ncell = Float(cell) rescue cell
+
+          value, cell = if nvalue.is_a?(::String) or ncell.is_a?(::String)
+            [ "\"#{value}\"", "\"#{cell}\"" ]
+          else
+            [ nvalue, ncell ]
+          end
+
+          s = "#{value} #{comparator} #{cell}"
+
+          Rufus::Decision::check_and_eval(s) rescue false
+        end
+
+        def cell_substitution?
+          true
+        end
+
       end
-
-      def matches?(cell, value)
-        false
-      end
-
-      def cell_substitution?
-        true
-      end
-
     end
   end
 end
-

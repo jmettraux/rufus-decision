@@ -22,26 +22,29 @@
 # Made in Japan.
 #++
 
+require 'rufus/decision/matcher'
 
 module Rufus
   module Decision
-    class Matcher
+    module Matchers
+      class String < Matcher
 
-      attr_accessor :options
-      
-      def initialize(options={})
-        @options = options
+        def matches?(cell, value)
+
+          modifiers = 0
+          modifiers += Regexp::IGNORECASE if options[:ignore_case]
+
+          rcell = options[:unbounded] ?
+            Regexp.new(cell, modifiers) : Regexp.new("^#{cell}$", modifiers)
+
+          rcell.match(value)
+        end
+
+        def cell_substitution?
+          true
+        end
+
       end
-
-      def matches?(cell, value)
-        false
-      end
-
-      def cell_substitution?
-        true
-      end
-
     end
   end
 end
-
