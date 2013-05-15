@@ -5,8 +5,6 @@
 # 2007 something
 #
 
-$:.unshift(File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib')))
-
 require 'test/unit'
 require 'rubygems'
 require 'rufus/decision'
@@ -51,6 +49,5 @@ module DecisionTestMixin
       assert_equal v, value
     end
   end
-
 end
 

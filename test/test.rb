@@ -5,7 +5,7 @@
 # 2007 something
 #
 
-$:.unshift File.dirname(File.dirname(__FILE__))
+$:.unshift(File.dirname(File.dirname(__FILE__)))
 
 
 Dir["#{File.dirname(__FILE__)}/dt_*.rb"].each { |path| load(path) }
