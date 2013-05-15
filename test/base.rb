@@ -9,6 +9,12 @@ require 'test/unit'
 require 'rufus/decision'
 
 
+def trim_table(s)
+
+  s.split("\n").collect(&:lstrip).join("\n").strip
+end
+
+
 module DecisionTestMixin
 
   protected

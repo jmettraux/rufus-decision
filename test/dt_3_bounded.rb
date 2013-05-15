@@ -12,10 +12,10 @@ class Dt3Test < Test::Unit::TestCase
   include DecisionTestMixin
 
   CSV14 = %{
-in:fstate,out:result
-apple,1
-orange,2
-}
+    in:fstate,out:result
+    apple,1
+    orange,2
+  }
 
   def test_bounded_match
 
@@ -36,11 +36,11 @@ orange,2
   end
 
   CSV14b = %{
-unbounded,
-in:fstate,out:result
-apple,1
-orange,2
-}
+    unbounded,
+    in:fstate,out:result
+    apple,1
+    orange,2
+  }
 
   def test_unbounded_match_set_in_table
 

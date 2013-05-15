@@ -12,14 +12,14 @@ class Dt1Test < Test::Unit::TestCase
   include DecisionTestMixin
 
   CSV1 = %{
-,,
-in:fx,in:fy,out:fz
-,,
-a,${fx},0
-c,d,${fx}
-e,f,${r:3+4}
-g,h,${r:'${fx}' + '${fy}'}
-}
+    ,,
+    in:fx,in:fy,out:fz
+    ,,
+    a,${fx},0
+    c,d,${fx}
+    e,f,${r:3+4}
+    g,h,${r:'${fx}' + '${fy}'}
+  }
 
   def test_1
 
@@ -86,9 +86,9 @@ g,h,${r:'${fx}' + '${fy}'}
   def test_vertical_rules_2
 
     table = %{
-in:topic,sports,sports,finance,finance,finance,politics,politics,politics,
-in:region,europe,,america,europe,,asia,america,,
-out:team_member,Alice,Bob,Charly,Donald,Ernest,Fujio,Gilbert,Henry,Zach
+      in:topic,sports,sports,finance,finance,finance,politics,politics,politics,
+      in:region,europe,,america,europe,,asia,america,,
+      out:team_member,Alice,Bob,Charly,Donald,Ernest,Fujio,Gilbert,Henry,Zach
     }
 
     h = { 'topic' => 'politics', 'region' => 'america' }

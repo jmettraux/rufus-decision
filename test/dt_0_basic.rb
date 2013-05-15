@@ -12,13 +12,13 @@ class Dt0Test < Test::Unit::TestCase
   include DecisionTestMixin
 
   CSV0 = %{
-,,
-in:fx,in:fy,out:fz
-,,
-a,b,0
-c,d,1
-e,f,2
-}
+    ,,
+    in:fx,in:fy,out:fz
+    ,,
+    a,b,0
+    c,d,1
+    e,f,2
+  }
 
   def test_0
 
@@ -36,12 +36,12 @@ e,f,2
   end
 
   CSV0B = %{
-in:fx,in:fy,out:fz
+    in:fx,in:fy,out:fz
 
-a,b,0
-c,d,1
-e,f,2
-}
+    a,b,0
+    c,d,1
+    e,f,2
+  }
 
   def test_0b
 
@@ -55,12 +55,12 @@ e,f,2
   # test 1 moved to decision_1_test.rb
 
   CSV2 = %{
-in:fx, in:fy, out:fz
-,,
-a,   b,   0
-c,   d,   1
-e,   f,   2
-}
+    in:fx, in:fy, out:fz
+    ,,
+    a,   b,   0
+    c,   d,   1
+    e,   f,   2
+  }
 
   def test_2
 
@@ -72,14 +72,14 @@ e,   f,   2
   end
 
   CSV3 = %{
-in:weather, in:month, out:take_umbrella?
-,,
-raining,  ,     yes
-sunny,    ,     no
-cloudy,   june,   yes
-cloudy,   may,    yes
-cloudy,   ,     no
-}
+    in:weather, in:month, out:take_umbrella?
+    ,,
+    raining,  ,     yes
+    sunny,    ,     no
+    cloudy,   june,   yes
+    cloudy,   may,    yes
+    cloudy,   ,     no
+  }
 
   def test_3
 
@@ -214,13 +214,13 @@ cloudy,   ,     no
   # TEST 6
 
   CSV6 = %{
-,
-in:fx, out:fy
-,
-<10,a
-<=100,b
-,c
-}
+    ,
+    in:fx, out:fy
+    ,
+    <10,a
+    <=100,b
+    ,c
+  }
 
   def test_6
 
@@ -239,13 +239,13 @@ in:fx, out:fy
   # TEST 7
 
   CSV7 = %{
-,
-in:fx, out:fy
-,
->100,a
->=10,b
-,c
-}
+    ,
+    in:fx, out:fy
+    ,
+    >100,a
+    >=10,b
+    ,c
+  }
 
   def test_7
 
@@ -265,16 +265,16 @@ in:fx, out:fy
     do_test(CSV7, wi, { "fy" => "a" }, false)
   end
 
-  CSV8 = %{
-in:efx,in:efy,out:efz
-a,b,0
-c,d,1
-e,f,2
-}
+  CSV8 = trim_table %{
+    in:efx,in:efy,out:efz
+    a,b,0
+    c,d,1
+    e,f,2
+  }
 
   def test_8
 
-    assert_equal CSV8.strip, Rufus::DecisionTable.new(CSV8).to_csv.strip
+    assert_equal CSV8, Rufus::DecisionTable.new(CSV8).to_csv
   end
 
   CSV9 = %{
@@ -301,10 +301,10 @@ e,f,2
   end
 
   CSV10 = %{
-in:fx,in:fx,out:fz
->90,<92,ok
-,,bad
-}
+    in:fx,in:fx,out:fz
+    >90,<92,ok
+    ,,bad
+  }
 
   def test_10
 
@@ -319,15 +319,15 @@ in:fx,in:fx,out:fz
   end
 
   CSV11 = %{
-through
-in:f1,in:f1,in:f2,in:f3,out:o1,out:e1,out:e2
+    through
+    in:f1,in:f1,in:f2,in:f3,out:o1,out:e1,out:e2
 
-<100,>=95,<=2.0,<=5,"Output1",,
-<100,>=95,,,"Output2",,
-<100,>=95,>2.0,,"Expection1",,
-<100,>=95,,>2.0,,,"Expection2"
-<100,>=95,,>2.0,"Invalid",,
-}
+    <100,>=95,<=2.0,<=5,"Output1",,
+    <100,>=95,,,"Output2",,
+    <100,>=95,>2.0,,"Expection1",,
+    <100,>=95,,>2.0,,,"Expection2"
+    <100,>=95,,>2.0,"Invalid",,
+  }
 
   def test_fu_zhang
 
@@ -336,15 +336,15 @@ in:f1,in:f1,in:f2,in:f3,out:o1,out:e1,out:e2
   end
 
   CSV12 = %{
-accumulate
-,,,
-in:fx, in:fy, out:fX, out:fY
-,,,
-a,   ,    red,  green
-,    a,   blue,   purple
-b,   ,    yellow, beige
-,    b,   white,  kuro
-}
+    accumulate
+    ,,,
+    in:fx, in:fy, out:fX, out:fY
+    ,,,
+    a,   ,    red,  green
+    ,    a,   blue,   purple
+    b,   ,    yellow, beige
+    ,    b,   white,  kuro
+  }
 
   def test_accumulate
 
@@ -384,10 +384,10 @@ b,   ,    yellow, beige
   end
 
   CSV13 = %{
-in:fx,out:fz
-90..92,ok
-,bad
-}
+    in:fx,out:fz
+    90..92,ok
+    ,bad
+  }
 
   def test_range
 
