@@ -24,7 +24,6 @@
 
 require 'csv'
 require 'open-uri'
-require 'open_uri_redirections'
 
 require 'rufus/dollar'
 require 'rufus/decision/hashes'
@@ -282,7 +281,7 @@ module Decision
     #
     def initialize(csv, options={})
 
-      @rows = Rufus::Decision.csv_to_a(csv)
+      @rows = Rufus::Decision.csv_to_a(csv, options[:open_uri])
 
       extract_options
 
@@ -590,12 +589,14 @@ module Decision
   # Given a CSV string or the URI / path to a CSV file, turns the CSV
   # into an array of array.
   #
-  def self.csv_to_a(csv)
+  def self.csv_to_a(csv, open_uri_options=nil)
 
     return csv if csv.is_a?(Array)
 
+    open_uri_options ||= {}
+
     csv = csv.to_s if csv.is_a?(URI)
-    csv = open(csv, allow_redirections: :safe) if is_uri?(csv)
+    csv = open(csv, open_uri_options) if is_uri?(csv)
 
     csv_lib = defined?(CSV::Reader) ? CSV::Reader : CSV
       # no CSV::Reader for Ruby 1.9.1
