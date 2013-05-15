@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2008-2010, John Mettraux, jmettraux@gmail.com
+# Copyright (c) 2008-2013, John Mettraux, jmettraux@gmail.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,6 @@
 #
 # Made in Japan.
 #++
-
 
 require 'fileutils'
 require 'rufus/treechecker'
@@ -45,19 +44,19 @@ module Decision
 
     attr_reader :parent_hash
 
-    def initialize (parent_hash)
+    def initialize(parent_hash)
 
       @parent_hash = parent_hash
     end
 
-    def [] (key)
+    def [](key)
 
       p, k = do_split(key)
 
       do_lookup(key, p, k)
     end
 
-    def []= (key, value)
+    def []=(key, value)
 
       p, v = do_split(value)
 
@@ -66,7 +65,7 @@ module Decision
 
     protected
 
-    def do_split (element)
+    def do_split(element)
 
       return [ nil, element ] unless element.is_a?(String)
 
@@ -75,18 +74,18 @@ module Decision
       a
     end
 
-    def handles_prefix? (p)
+    def handles_prefix?(p)
 
       false
     end
 
-    def do_eval (key, p, k)
+    def do_eval(key, p, k)
 
       raise NotImplementedError.new(
         "missing do_eval(key, p, k) implementation")
     end
 
-    def do_lookup (key, p, k)
+    def do_lookup(key, p, k)
 
       if handles_prefix?(p)
 
@@ -102,7 +101,7 @@ module Decision
       end
     end
 
-    def do_put (key, value, p, v)
+    def do_put(key, value, p, v)
 
       val = value
 
@@ -143,7 +142,7 @@ module Decision
   #
   class EvalHashFilter < HashFilter
 
-    def initialize (parent_hash)
+    def initialize(parent_hash)
 
       super(parent_hash)
     end
@@ -164,7 +163,7 @@ module Decision
       binding()
     end
 
-    def do_eval (key, p, k)
+    def do_eval(key, p, k)
 
       Rufus::Decision.check_and_eval(k, get_binding)
     end
@@ -202,7 +201,7 @@ module Decision
   # Given a string (of ruby code), first makes sure it doesn't contain
   # harmful code, then evaluates it.
   #
-  def self.check_and_eval (ruby_code, bndng=binding())
+  def self.check_and_eval(ruby_code, bndng=binding())
 
     TREECHECKER.check(ruby_code)
 
@@ -210,7 +209,6 @@ module Decision
 
     eval(ruby_code, bndng)
   end
-
 end
 end
 

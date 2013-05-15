@@ -16,11 +16,14 @@ module DecisionTestMixin
 
   protected
 
-  def do_test (table_data, h, expected_result, verbose=false)
+  def do_test(table_data, h, expected_result, verbose=false)
 
-    table = table_data.is_a?(Rufus::Decision::Table) ?
-      table_data :
-      Rufus::Decision::Table.new(table_data)
+    table =
+      if table_data.is_a?(Rufus::Decision::Table)
+        table_data
+      else
+        Rufus::Decision::Table.new(table_data)
+      end
 
     if verbose
       puts

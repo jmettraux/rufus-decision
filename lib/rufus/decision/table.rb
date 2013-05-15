@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2007-2010, John Mettraux, jmettraux@gmail.com
+# Copyright (c) 2007-2013, John Mettraux, jmettraux@gmail.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,10 +22,8 @@
 # Made in Japan.
 #++
 
-
 require 'csv'
 require 'open-uri'
-require 'open_uri_redirections'
 
 require 'rufus/dollar'
 require 'rufus/decision/hashes'
@@ -281,9 +279,9 @@ module Decision
     # * :accumulate : gather instead of overriding (implies :through)
     # * :ruby_eval : ruby code evaluation is OK
     #
-    def initialize (csv, options={})
+    def initialize(csv, options={})
 
-      @rows = Rufus::Decision.csv_to_a(csv)
+      @rows = Rufus::Decision.csv_to_a(csv, options[:open_uri])
 
       extract_options
 
@@ -303,7 +301,7 @@ module Decision
     # Like transform, but the original hash doesn't get touched,
     # a copy of it gets transformed and finally returned.
     #
-    def transform (hash)
+    def transform(hash)
 
       transform!(hash.dup)
     end
@@ -311,7 +309,7 @@ module Decision
     # Passes the hash through the decision table and returns it,
     # transformed.
     #
-    def transform! (hash)
+    def transform!(hash)
 
       hash = Rufus::Decision::EvalHashFilter.new(hash) if @ruby_eval
 
@@ -337,7 +335,7 @@ module Decision
 
     protected
 
-    def set_opt (options, *optnames)
+    def set_opt(options, *optnames)
 
       optnames.each do |oname|
 
@@ -352,7 +350,7 @@ module Decision
 
     # Returns true if the hash matches the in: values for this row
     #
-    def matches? (row, hash)
+    def matches?(row, hash)
 
       @header.ins.each do |x, in_header|
 
@@ -381,7 +379,7 @@ module Decision
       true
     end
 
-    def string_compare (value, cell)
+    def string_compare(value, cell)
 
       modifiers = 0
       modifiers += Regexp::IGNORECASE if @ignore_case
@@ -392,7 +390,7 @@ module Decision
       rcell.match(value)
     end
 
-    def numeric_compare (match, value, cell)
+    def numeric_compare(match, value, cell)
 
       comparator = match[1]
       cell = match[2]
@@ -411,7 +409,7 @@ module Decision
       Rufus::Decision::check_and_eval(s) rescue false
     end
 
-    def apply (row, hash)
+    def apply(row, hash)
 
       @header.outs.each do |x, out_header|
 
@@ -477,7 +475,7 @@ module Decision
     # Returns true if the first row of the table contains just an "in:" or
     # an "out:"
     #
-    def is_vertical_table? (first_row)
+    def is_vertical_table?(first_row)
 
       bin = false
       bout = false
@@ -528,7 +526,7 @@ module Decision
     # The Ruby range returned (if any) will accept String or Numeric,
     # ie (4..6).include?("5") will yield true.
     #
-    def to_ruby_range (s)
+    def to_ruby_range(s)
 
       range = if RUBY_NUMERIC_RANGE_REGEXP.match(s)
 
@@ -566,7 +564,7 @@ module Decision
         @outs = {}
       end
 
-      def add (cell, x)
+      def add(cell, x)
 
         if cell.match(IN)
 
@@ -591,12 +589,14 @@ module Decision
   # Given a CSV string or the URI / path to a CSV file, turns the CSV
   # into an array of array.
   #
-  def self.csv_to_a (csv)
+  def self.csv_to_a(csv, open_uri_options=nil)
 
     return csv if csv.is_a?(Array)
 
+    open_uri_options ||= {}
+
     csv = csv.to_s if csv.is_a?(URI)
-    csv = open(csv, allow_redirections: :safe) if is_uri?(csv)
+    csv = open(csv, open_uri_options) if is_uri?(csv)
 
     csv_lib = defined?(CSV::Reader) ? CSV::Reader : CSV
       # no CSV::Reader for Ruby 1.9.1
@@ -611,7 +611,7 @@ module Decision
   # Returns true if the string is a URI false if it's something else
   # (CSV data ?)
   #
-  def self.is_uri? (string)
+  def self.is_uri?(string)
 
     return false if string.index("\n") # quick one
 
@@ -642,7 +642,7 @@ module Decision
   # You can also pass the CSV as a string or the URI/path to the actual CSV
   # file.
   #
-  def self.transpose (a)
+  def self.transpose(a)
 
     a = csv_to_a(a) if a.is_a?(String)
 

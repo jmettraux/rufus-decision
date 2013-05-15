@@ -11,7 +11,7 @@ require File.join(File.dirname(__FILE__), 'base.rb')
 class Dt2Test < Test::Unit::TestCase
   include DecisionTestMixin
 
-  CSV3D = "http://spreadsheets.google.com/pub?key=pCkopoeZwCNsMWOVeDjR1TQ&output=csv&gid=0"
+  CSV3D = 'https://spreadsheets.google.com/pub?key=pCkopoeZwCNsMWOVeDjR1TQ&output=csv&gid=0'
 
   def test_3d
 
