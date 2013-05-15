@@ -28,7 +28,7 @@ module Rufus
     class Matcher
 
       attr_accessor :options
-      
+
       def initialize(options={})
         @options = options
       end
