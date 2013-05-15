@@ -22,12 +22,13 @@
 # Made in Japan.
 #++
 
-require 'rufus/decision/matcher'
 
 module Rufus
   module Decision
     module Matchers
+
       class Range < Matcher
+
         # A regexp for checking if a string is a numeric Ruby range
         #
         RUBY_NUMERIC_RANGE_REGEXP = Regexp.compile(
@@ -81,7 +82,6 @@ module Rufus
         def cell_substitution?
           true
         end
-
       end
     end
   end

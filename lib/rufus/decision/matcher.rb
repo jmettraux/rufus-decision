@@ -25,6 +25,7 @@
 
 module Rufus
   module Decision
+
     class Matcher
 
       attr_accessor :options
@@ -40,8 +41,9 @@ module Rufus
       def cell_substitution?
         true
       end
-
     end
   end
 end
+
+Dir[File.expand_path('../matchers/*.rb', __FILE__)].each { |pa| require(pa) }
 

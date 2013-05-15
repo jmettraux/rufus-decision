@@ -22,11 +22,11 @@
 # Made in Japan.
 #++
 
-require 'rufus/decision/matcher'
 
 module Rufus
   module Decision
     module Matchers
+
       class String < Matcher
 
         def matches?(cell, value)
@@ -43,7 +43,6 @@ module Rufus
         def cell_substitution?
           true
         end
-
       end
     end
   end

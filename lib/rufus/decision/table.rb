@@ -28,8 +28,6 @@ require 'open-uri'
 require 'rufus/dollar'
 require 'rufus/decision/hashes'
 require 'rufus/decision/matcher'
-require 'rufus/decision/matchers/numeric'
-require 'rufus/decision/matchers/range'
 
 
 module Rufus

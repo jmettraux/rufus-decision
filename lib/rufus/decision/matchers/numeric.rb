@@ -22,12 +22,13 @@
 # Made in Japan.
 #++
 
-require 'rufus/decision/matcher'
 
 module Rufus
   module Decision
     module Matchers
+
       class Numeric < Matcher
+
         NUMERIC_COMPARISON = /^([><]=?)(.*)$/
 
         def matches?(cell, value)
@@ -54,7 +55,6 @@ module Rufus
         def cell_substitution?
           true
         end
-
       end
     end
   end
