@@ -2,6 +2,7 @@ require File.join(File.dirname(__FILE__), 'base.rb')
 
 require 'rufus/decision/matchers/string'
 
+
 class StringMatcherTest < Test::Unit::TestCase
 
   def test_substitution_true
@@ -37,7 +38,7 @@ class StringMatcherTest < Test::Unit::TestCase
       cell, value = line.split(/ *\| */)
       cell.strip!
       value.strip!
-      refute m.matches?(cell, value.strip), "'#{cell}' should NOT match '#{value}'"
+      assert ! m.matches?(cell, value.strip), "'#{cell}' should NOT match '#{value}'"
     end
   end
 end
