@@ -27,6 +27,7 @@ require 'open-uri'
 
 require 'rufus/dollar'
 require 'rufus/decision/hashes'
+require 'rufus/decision/matcher'
 
 
 module Rufus
