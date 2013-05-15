@@ -6,7 +6,6 @@
 #
 
 require 'test/unit'
-require 'rubygems'
 require 'rufus/decision'
 
 
