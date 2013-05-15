@@ -106,15 +106,37 @@ In this example, the CSV table is the direction CSV representation of the Google
 
 WARNING though : use at your own risk. CSV loaded from untrusted locations may contain harmful code. The rufus-decision gem has an abstract tree checker integrated, it will check all the CSVs that contain calls in Ruby and raise a security error when possibly harmful code is spotted. Bullet vs Armor. Be warned.
 
+### redirections
+
+(Courtesy of [lastobelus](https://github.com/lastobelus))
+
+To help with redirections, one can modify the above example into:
+
+```ruby
+  require 'rubygems'
+  require 'rufus/decision'
+
+  require 'open_uri_redirections'
+    # https://github.com/jaimeiniesta/open_uri_redirections
+
+  TABLE = Rufus::DecisionTable.new(
+    'http://spreadsheets.google.com/pub?key=pCkopoeZwCNsMWOVeDjR1TQ&output=csv',
+    :open_uri => { :allow_redirections => :safe })
+```
+
 
 ## web demo
 
 There is a small demo of an input table + a decision table. You can run it by doing :
 
+```
+  # (ouch, kind of old style...)
+
   gem install sinatra
   git clone git://github.com/jmettraux/rufus-decision.git
   cd rufus-decision
   ruby demo/start.rb
+```
 
 and then point your browser to http://localhost:4567/
 
