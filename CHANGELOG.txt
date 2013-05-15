@@ -2,7 +2,9 @@
 = rufus-decision CHANGELOG.txt
 
 
-== rufus-decision - 1.3.3    not yet released
+== rufus-decision - 1.4.0    not yet released
+
+- matcher extraction by Michael Johnston
 
 
 == rufus-decision - 1.3.2    released 2010/05/28
