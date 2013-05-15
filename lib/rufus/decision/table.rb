@@ -27,6 +27,9 @@ require 'open-uri'
 
 require 'rufus/dollar'
 require 'rufus/decision/hashes'
+require 'rufus/decision/matcher'
+require 'rufus/decision/matchers/numeric'
+require 'rufus/decision/matchers/range'
 
 
 module Rufus
@@ -234,7 +237,6 @@ module Decision
     IN = /^in:/
     OUT = /^out:/
     IN_OR_OUT = /^(in|out):/
-    NUMERIC_COMPARISON = /^([><]=?)(.*)$/
 
     # when set to true, the transformation process stops after the
     # first match got applied.
@@ -261,6 +263,15 @@ module Decision
     #
     attr_accessor :unbound
 
+    # set of matchers that will be applied (in order) to determine if a
+    # cell matches the hash to be transformed. By default this is set to
+    # [
+    #    Rufus::Decision::Matchers::Numeric.new,
+    #    Rufus::Decision::Matchers::Range.new,
+    #    Rufus::Decision::Matchers::String.new
+    # ]
+    #
+    attr_accessor :matchers
     # The constructor for DecisionTable, you can pass a String, an Array
     # (of arrays), a File object. The CSV parser coming with Ruby will take
     # care of it and a DecisionTable instance will be built.
@@ -283,6 +294,7 @@ module Decision
 
       @rows = Rufus::Decision.csv_to_a(csv, options[:open_uri])
 
+
       extract_options
 
       parse_header_row
@@ -296,6 +308,26 @@ module Decision
       set_opt(options, :unbounded)
 
       @first_match = false if @accumulate
+
+      # This was the best option I could think of
+      # without refactoring to use options hash directly
+      # instead of ivars
+      options[:ignore_case] = @ignore_case
+      options[:accumulate]  = @accumulate
+      options[:ruby_eval]   = @ruby_eval
+      options[:unbounded]   = @unbounded
+      options[:first_match] = @first_match
+
+      @matchers = options.delete(:matchers)
+      if @matchers.nil?
+        @matchers = [
+          Rufus::Decision::Matchers::Numeric.new(options),
+          Rufus::Decision::Matchers::Range.new(options),
+          Rufus::Decision::Matchers::String.new(options)
+        ]
+      else
+        @matchers.each{|matcher| matcher.options = options }
+      end
     end
 
     # Like transform, but the original hash doesn't get touched,
@@ -342,9 +374,9 @@ module Decision
         oname = oname.to_s
 
         v = options[oname.intern] || options[oname]
+
         next unless v != nil
         instance_variable_set("@#{optnames.first.to_s}", v)
-        return
       end
     end
 
@@ -362,51 +394,13 @@ module Decision
 
         next if cell == nil || cell == ''
 
-        cell = Rufus::dsub(cell, hash)
-
-        b = if m = NUMERIC_COMPARISON.match(cell)
-
-          numeric_compare(m, value, cell)
-        else
-
-          range = to_ruby_range(cell)
-          range ? range.include?(value) : string_compare(value, cell)
+        return false unless @matchers.any? do |matcher|
+          c = matcher.cell_substitution? ? Rufus::dsub(cell, hash) : cell
+          matcher.matches?(c, value)
         end
-
-        return false unless b
       end
 
       true
-    end
-
-    def string_compare(value, cell)
-
-      modifiers = 0
-      modifiers += Regexp::IGNORECASE if @ignore_case
-
-      rcell = @unbounded ?
-        Regexp.new(cell, modifiers) : Regexp.new("^#{cell}$", modifiers)
-
-      rcell.match(value)
-    end
-
-    def numeric_compare(match, value, cell)
-
-      comparator = match[1]
-      cell = match[2]
-
-      nvalue = Float(value) rescue value
-      ncell = Float(cell) rescue cell
-
-      value, cell = if nvalue.is_a?(String) or ncell.is_a?(String)
-        [ "\"#{value}\"", "\"#{cell}\"" ]
-      else
-        [ nvalue, ncell ]
-      end
-
-      s = "#{value} #{comparator} #{cell}"
-
-      Rufus::Decision::check_and_eval(s) rescue false
     end
 
     def apply(row, hash)
@@ -441,7 +435,7 @@ module Decision
       end
     end
 
-    def extract_options
+    def extract_options(options={})
 
       row = @rows.first
 
@@ -508,51 +502,6 @@ module Decision
       end
     end
 
-    # A regexp for checking if a string is a numeric Ruby range
-    #
-    RUBY_NUMERIC_RANGE_REGEXP = Regexp.compile(
-      "^\\d+(\\.\\d+)?\\.{2,3}\\d+(\\.\\d+)?$")
-
-    # A regexp for checking if a string is an alpha Ruby range
-    #
-    RUBY_ALPHA_RANGE_REGEXP = Regexp.compile(
-      "^([A-Za-z])(\\.{2,3})([A-Za-z])$")
-
-    # If the string contains a Ruby range definition
-    # (ie something like "93.0..94.5" or "56..72"), it will return
-    # the Range instance.
-    # Will return nil else.
-    #
-    # The Ruby range returned (if any) will accept String or Numeric,
-    # ie (4..6).include?("5") will yield true.
-    #
-    def to_ruby_range(s)
-
-      range = if RUBY_NUMERIC_RANGE_REGEXP.match(s)
-
-        eval(s)
-
-      else
-
-        m = RUBY_ALPHA_RANGE_REGEXP.match(s)
-
-        m ? eval("'#{m[1]}'#{m[2]}'#{m[3]}'") : nil
-      end
-
-      class << range
-
-        alias :old_include? :include?
-
-        def include? (elt)
-
-          elt = first.is_a?(Numeric) ? (Float(elt) rescue '') : elt
-          old_include?(elt)
-        end
-
-      end if range
-
-      range
-    end
 
     class Header
 

@@ -15,7 +15,7 @@ class Dt2Test < Test::Unit::TestCase
 
   def test_3d
 
-    #return unless online?
+    return if ENV['SKIP_RUFUS_SLOW']
 
     h = {}
     h["weather"] = "raining"
