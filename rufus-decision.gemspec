@@ -12,6 +12,7 @@ Gem::Specification.new do |s|
   s.email = [ 'jmettraux@gmail.com' ]
   s.homepage = 'https://github.com/jmettraux/rufus-decision'
   s.rubyforge_project = 'rufus'
+  s.license = 'MIT'
   s.summary = 'a decision table gem, based on CSV'
 
   s.description = %{
