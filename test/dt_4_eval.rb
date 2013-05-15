@@ -5,9 +5,7 @@
 # Mon Oct  9 22:19:44 JST 2006
 #
 
-require File.join(File.dirname(__FILE__), 'base.rb')
-
-require 'rufus/decision/hashes'
+require File.expand_path('../base.rb', __FILE__)
 
 
 class Dt4Test < Test::Unit::TestCase

@@ -5,7 +5,7 @@
 # Thu Apr 23 15:18:15 JST 2009
 #
 
-require File.join(File.dirname(__FILE__), 'base.rb')
+require File.expand_path('../base.rb', __FILE__)
 
 
 class Dt5Test < Test::Unit::TestCase

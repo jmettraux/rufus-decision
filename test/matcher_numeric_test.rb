@@ -1,6 +1,5 @@
-require File.join(File.dirname(__FILE__), 'base.rb')
 
-require 'rufus/decision/matchers/numeric'
+require File.expand_path('../base.rb', __FILE__)
 
 
 class NumericMatcherTest < Test::Unit::TestCase

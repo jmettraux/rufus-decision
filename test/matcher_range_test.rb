@@ -1,6 +1,5 @@
-require File.join(File.dirname(__FILE__), 'base.rb')
 
-require 'rufus/decision/matchers/string'
+require File.expand_path('../base.rb', __FILE__)
 
 
 class RangeMatcherTest < Test::Unit::TestCase
