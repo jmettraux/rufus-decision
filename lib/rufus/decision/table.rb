@@ -236,30 +236,36 @@ module Decision
     OUT = /^out:/
     IN_OR_OUT = /^(in|out):/
 
+    # Access to the table options.
+    #
+    # Here is a description of the options:
+    #
+    # == :first_match
+    #
     # when set to true, the transformation process stops after the
     # first match got applied.
     #
-    attr_accessor :first_match
-
+    # == :ignore_case
+    #
     # when set to true, matches evaluation ignores case.
     #
-    attr_accessor :ignore_case
-
+    # == :accumulate
+    #
     # when set to true, multiple matches result get accumulated in
     # an array.
     #
-    attr_accessor :accumulate
-
+    # == :ruby_eval
+    #
     # when set to true, evaluation of ruby code for output is allowed. False
     # by default.
     #
-    attr_accessor :ruby_eval
-
+    # == :unbound
+    #
     # false (bounded) by default : exact matches for string matching. When
     # 'unbounded', target 'apple' will match for values like 'greenapples' or
     # 'apple seed'.
     #
-    attr_accessor :unbound
+    attr_reader :options
 
     # set of matchers that will be applied (in order) to determine if a
     # cell matches the hash to be transformed. By default this is set to
@@ -288,45 +294,40 @@ module Decision
     # * :ignore_case : case is ignored (not ignored by default)
     # * :accumulate : gather instead of overriding (implies :through)
     # * :ruby_eval : ruby code evaluation is OK
+    # * :unbound[ed]: when true "apple" matches "apple" and "green apples"
     #
-    def initialize(csv, options={})
+    # * :open_uri: optionally contains a hash of options passed to the .open
+    #   method of open-uri.
+    #
+    def initialize(csv, options=nil)
 
-      @rows = Rufus::Decision.csv_to_a(csv, options[:open_uri])
+      @options = {}; (options || {}).each { |k, v| @options[k.to_sym] = v }
 
+      @rows = Rufus::Decision.csv_to_a(csv, @options[:open_uri])
 
-      extract_options
+      shift_options_from_table
 
-      parse_header_row
+      normalize_option(:unbounded, :unbound)
+      normalize_option(:first_match, :firstmatch)
+      normalize_option(:ignore_case, :ignorecase)
 
-      @first_match = false if options[:through] == true
-      @first_match = true if @first_match.nil?
+      @options[:first_match] = true if @options[:first_match].nil?
 
-      set_opt(options, :ignore_case, :ignorecase)
-      set_opt(options, :accumulate)
-      set_opt(options, :ruby_eval)
-      set_opt(options, :unbounded)
+      @options[:first_match] = false if @options[:through]
+      @options[:first_match] = false if @options[:accumulate]
 
-      @first_match = false if @accumulate
-
-      # This was the best option I could think of
-      # without refactoring to use options hash directly
-      # instead of ivars
-      options[:ignore_case] = @ignore_case
-      options[:accumulate]  = @accumulate
-      options[:ruby_eval]   = @ruby_eval
-      options[:unbounded]   = @unbounded
-      options[:first_match] = @first_match
-
-      @matchers = options.delete(:matchers)
+      @matchers = @options.delete(:matchers)
       if @matchers.nil?
         @matchers = [
-          Rufus::Decision::Matchers::Numeric.new(options),
-          Rufus::Decision::Matchers::Range.new(options),
-          Rufus::Decision::Matchers::String.new(options)
+          Rufus::Decision::Matchers::Numeric.new(@options),
+          Rufus::Decision::Matchers::Range.new(@options),
+          Rufus::Decision::Matchers::String.new(@options)
         ]
       else
-        @matchers.each{|matcher| matcher.options = options }
+        @matchers.each { |matcher| matcher.options = @options }
       end
+
+      parse_header_row
     end
 
     # Like transform, but the original hash doesn't get touched,
@@ -342,12 +343,12 @@ module Decision
     #
     def transform!(hash)
 
-      hash = Rufus::Decision::EvalHashFilter.new(hash) if @ruby_eval
+      hash = Rufus::Decision::EvalHashFilter.new(hash) if @options[:ruby_eval]
 
       @rows.each do |row|
         next unless matches?(row, hash)
         apply(row, hash)
-        break if @first_match
+        break if @options[:first_match]
       end
 
       hash.is_a?(Rufus::Decision::HashFilter) ? hash.parent_hash : hash
@@ -365,19 +366,6 @@ module Decision
     end
 
     protected
-
-    def set_opt(options, *optnames)
-
-      optnames.each do |oname|
-
-        oname = oname.to_s
-
-        v = options[oname.intern] || options[oname]
-
-        next unless v != nil
-        instance_variable_set("@#{optnames.first.to_s}", v)
-      end
-    end
 
     # Returns true if the hash matches the in: values for this row
     #
@@ -412,7 +400,7 @@ module Decision
 
         value = Rufus::dsub(value, hash)
 
-        hash[out_header] = if @accumulate
+        hash[out_header] = if @options[:accumulate]
           #
           # accumulate
 
@@ -434,7 +422,17 @@ module Decision
       end
     end
 
-    def extract_options(options={})
+    OPTION_NAMES =
+      %w{
+        accumulate first_match firstmatch
+        ignorecase ignore_case through unbound unbounded
+      }
+
+    # Options can be placed in the cells before the header row.
+    # This method shifts those "option rows" and sets the table options
+    # accordingly.
+    #
+    def shift_options_from_table
 
       row = @rows.first
 
@@ -448,21 +446,22 @@ module Decision
 
         cell = cell.downcase
 
-        if cell == 'ignorecase' or cell == 'ignore_case'
-          @ignore_case = true
-        elsif cell == 'through'
-          @first_match = false
-        elsif cell == 'accumulate'
-          @first_match = false
-          @accumulate = true
-        elsif cell == 'unbounded'
-          @unbounded = true
-        end
+        @options[cell.to_sym] = true if OPTION_NAMES.include?(cell)
       end
 
       @rows.shift
 
-      extract_options
+      shift_options_from_table
+    end
+
+    # Used to align options on :unbounded or :ignore_case
+    #
+    def normalize_option(name, *variants)
+
+      variants.each do |variant|
+        break if @options[name] != nil
+        @options[name] = @options.delete(variant)
+      end
     end
 
     # Returns true if the first row of the table contains just an "in:" or
