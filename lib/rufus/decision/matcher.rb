@@ -30,10 +30,6 @@ module Rufus
 
       attr_accessor :options
 
-      def initialize(options={})
-        @options = options
-      end
-
       def matches?(cell, value)
         false
       end

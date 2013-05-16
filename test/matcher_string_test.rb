@@ -7,12 +7,16 @@ class StringMatcherTest < Test::Unit::TestCase
   def test_substitution_true
 
     m = Rufus::Decision::Matchers::String.new
+    m.options = {}
+
     assert m.cell_substitution?
   end
 
   def test_does_match
 
     m = Rufus::Decision::Matchers::String.new
+    m.options = {}
+
     %Q{
       a       |  a
       mary    |  mary
@@ -25,6 +29,8 @@ class StringMatcherTest < Test::Unit::TestCase
   def test_doesnt_match
 
     m = Rufus::Decision::Matchers::String.new
+    m.options = {}
+
     %Q{
       foo     |  bar
       1..3    | 1

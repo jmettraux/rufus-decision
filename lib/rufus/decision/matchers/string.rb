@@ -39,10 +39,6 @@ module Rufus
 
           rcell.match(value)
         end
-
-        def cell_substitution?
-          true
-        end
       end
     end
   end

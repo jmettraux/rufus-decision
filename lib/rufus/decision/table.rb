@@ -316,16 +316,19 @@ module Decision
       @options[:first_match] = false if @options[:through]
       @options[:first_match] = false if @options[:accumulate]
 
-      @matchers = @options.delete(:matchers)
-      if @matchers.nil?
-        @matchers = [
-          Rufus::Decision::Matchers::Numeric.new(@options),
-          Rufus::Decision::Matchers::Range.new(@options),
-          Rufus::Decision::Matchers::String.new(@options)
-        ]
-      else
-        @matchers.each { |matcher| matcher.options = @options }
-      end
+      @matchers =
+        (
+          @options.delete(:matchers) ||
+          [ Matchers::Numeric, Matchers::Range, Matchers::String ]
+        ).collect { |m|
+          matcher = m.is_a?(Class) ? m.new : m
+          if matcher.respond_to?(:options=)
+            matcher.options = @options
+          elsif matcher.respond_to?(:table=)
+            matcher.table = self
+          end
+          matcher
+        }
 
       parse_header_row
     end

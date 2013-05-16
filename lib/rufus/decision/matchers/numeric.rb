@@ -32,6 +32,7 @@ module Rufus
         NUMERIC_COMPARISON = /^([><]=?)(.*)$/
 
         def matches?(cell, value)
+
           match = NUMERIC_COMPARISON.match(cell)
           return false if match.nil?
 
@@ -50,10 +51,6 @@ module Rufus
           s = "#{value} #{comparator} #{cell}"
 
           Rufus::Decision::check_and_eval(s) rescue false
-        end
-
-        def cell_substitution?
-          true
         end
       end
     end

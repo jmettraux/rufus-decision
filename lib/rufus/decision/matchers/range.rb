@@ -75,12 +75,10 @@ module Rufus
         end
 
         def matches?(cell, value)
-          range = to_ruby_range(cell)
-          range && range.include?(value)
-        end
 
-        def cell_substitution?
-          true
+          range = to_ruby_range(cell)
+
+          range && range.include?(value)
         end
       end
     end
