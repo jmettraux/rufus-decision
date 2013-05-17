@@ -3,7 +3,7 @@
 
 [![Build Status](https://secure.travis-ci.org/jmettraux/rufus-decision.png)](http://travis-ci.org/jmettraux/rufus-decision)
 
-CSV based Ruby decision tables
+CSV based Ruby decision tables.
 
 
 ## getting it
@@ -13,6 +13,11 @@ CSV based Ruby decision tables
 ```
 
 or add ```gem 'rufus-decision'``` to your Gemfile.
+
+
+## tools based on rufus-decision
+
+* https://github.com/lastobelus/rudelo - Set Logic matcher
 
 
 ## blog posts
