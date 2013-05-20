@@ -29,17 +29,17 @@ var RuoteSheets = function() {
   //
   // MISC FUNCTIONS
 
-  function dwrite (msg) {
+  function dwrite(msg) {
     document.body.appendChild(document.createTextNode(msg));
     document.body.appendChild(document.createElement('br'));
   }
 
-  function findElt (i) {
+  function findElt(i) {
     if ((typeof i) == 'string') return document.getElementById(i);
     else return i;
   }
 
-  function createElement (parentNode, tag, klass, atts) {
+  function createElement(parentNode, tag, klass, atts) {
     var e = document.createElement(tag);
     if (parentNode) parentNode.appendChild(e);
     if (klass) e.setAttribute('class', klass);
@@ -47,16 +47,16 @@ var RuoteSheets = function() {
     return e;
   }
 
-  function addClass (elt, klass) {
+  function addClass(elt, klass) {
     elt.setAttribute('class', elt.getAttribute('class') + ' ' + klass);
   }
-  function removeClass (elt, klass) {
+  function removeClass(elt, klass) {
     // warning : naive on the right border (after word)
     elt.setAttribute(
       'class', elt.getAttribute('class').replace(' ' + klass, ''));
   }
 
-  function placeAfter (elt, newElt) {
+  function placeAfter(elt, newElt) {
     var p = elt.parentNode;
     var n = elt.nextSibling;
     if (n) p.insertBefore(newElt, n);
@@ -66,14 +66,14 @@ var RuoteSheets = function() {
   //
   // EVENT HANDLERS
 
-  function cellOnFocus (evt) {
+  function cellOnFocus(evt) {
     var e = evt || window.event;
     var sheet = e.target.parentNode.parentNode;
     unfocusSheet(sheet);
     setCurrentCell(sheet, e.target);
   }
 
-  function cellOnKeyDown (evt) {
+  function cellOnKeyDown(evt) {
     var e = evt || window.event;
     var cell = e.target;
     if ( ! cell.previousValue) {
@@ -83,7 +83,7 @@ var RuoteSheets = function() {
     return true;
   }
 
-  function cellOnKeyUp (evt) {
+  function cellOnKeyUp(evt) {
     var e = evt || window.event;
     var c = e.charCode || e.keyCode;
     //alert("" + c + " / " + e.ctrlKey + " - " + e.altKey + " - " + e.shiftKey);
@@ -92,12 +92,12 @@ var RuoteSheets = function() {
     return (c != 13);
   }
 
-  function cellOnChange (evt) {
+  function cellOnChange(evt) {
     var e = evt || window.event;
     e.target.previousValue = null; // cleaning
   }
 
-  function handleOnMouseDown (evt) {
+  function handleOnMouseDown(evt) {
     var e = evt || window.event;
     var headcell = e.target.parentNode;
     var headrow = headcell.parentNode;
@@ -105,14 +105,14 @@ var RuoteSheets = function() {
     headrow.down = [ e.target.parentNode, e.clientX, col ];
   }
 
-  function rowOnMouseDown (evt) {
+  function rowOnMouseDown(evt) {
 
     var e = evt || window.event;
     var sheet = e.target.parentNode.parentNode;
     sheet.mouseDownCell = e.target;
   }
 
-  function rowOnMouseUp (evt) {
+  function rowOnMouseUp(evt) {
 
     var e = evt || window.event;
 
@@ -132,7 +132,7 @@ var RuoteSheets = function() {
     var maxy = Math.max(rc0[0], rc1[0]);
 
     //dwrite('' + minx + '/' + miny + '  // ' + maxx + '/' + maxy);
-    iterate(sheet, function (t, x, y, e) {
+    iterate(sheet, function(t, x, y, e) {
       if (t != 'cell') return false;
       if (x < minx || x > maxx) return false;
       if (y < miny || y > maxy) return false;
@@ -140,14 +140,14 @@ var RuoteSheets = function() {
     });
   }
 
-  function getHeadRow (elt) {
+  function getHeadRow(elt) {
     var t = getRuseType(elt);
     if (t == 'headcell') return getHeadRow(elt.parentNode);
     if (t == 'headrow') return elt;
     return null;
   }
 
-  function handleOnMouseUp (evt) {
+  function handleOnMouseUp(evt) {
 
     var e = evt || window.event;
 
@@ -161,7 +161,7 @@ var RuoteSheets = function() {
 
     save(hr.parentNode);
 
-    iterate(hr.parentNode, function (t, x, y, e) {
+    iterate(hr.parentNode, function(t, x, y, e) {
       if ((t == 'cell' || t == 'headcell') && x == hr.down[2]) {
         e.style.width = '' + w + 'px';
       }
@@ -172,13 +172,13 @@ var RuoteSheets = function() {
   //
   // ...
 
-  function unfocusSheet (sheet) {
+  function unfocusSheet(sheet) {
     iterate(sheet, function (t, x, y, e) {
       if (t == 'cell') removeClass(e, 'focused');
     });
   }
 
-  function getCurrentCell (sheet) {
+  function getCurrentCell(sheet) {
 
     sheet = findElt(sheet);
 
@@ -192,17 +192,17 @@ var RuoteSheets = function() {
     return sheet.currentCell;
   }
 
-  function setCurrentCell (sheet, cell) {
+  function setCurrentCell(sheet, cell) {
 
     findElt(sheet).currentCell = cell;
   }
 
-  function isCellEmpty (elt) {
+  function isCellEmpty(elt) {
 
     return (elt.value == '');
   }
 
-  function move (e, c) {
+  function move(e, c) {
 
     var rc = determineRowCol(e.target);
     var row = rc[0]; var col = rc[1];
@@ -221,20 +221,20 @@ var RuoteSheets = function() {
     }
   }
 
-  function determineRowCol (elt) {
+  function determineRowCol(elt) {
 
     var cc = elt.getAttribute('class').split(' ');
     return [ cc[1].split('_')[1], cc[2].split('_')[1] ];
   }
 
-  function findRow (sheet, y) {
-    var row = iterate(sheet, function (t, x, yy, e) {
+  function findRow(sheet, y) {
+    var row = iterate(sheet, function(t, x, yy, e) {
       if (t == 'row' && yy == y) return e;
     });
     return row ? row[0] : null;
   }
 
-  function findCell (sheet, y, x) {
+  function findCell(sheet, y, x) {
 
     var row = findRow(sheet, y);
     if (row == null) return null;
@@ -247,7 +247,7 @@ var RuoteSheets = function() {
     return null;
   }
 
-  function computeColumns (data) {
+  function computeColumns(data) {
 
     var cols = 0;
 
@@ -258,15 +258,15 @@ var RuoteSheets = function() {
     return cols;
   }
 
-  function getWidths (sheet) {
+  function getWidths(sheet) {
     var widths = [];
-    iterate(sheet, function (t, x, y, e) {
+    iterate(sheet, function(t, x, y, e) {
       if (t == 'headcell') widths.push(e.offsetWidth);
     });
     return widths;
   }
 
-  function getRuseType (elt) {
+  function getRuseType(elt) {
     if (elt.nodeType != 1) return false;
     var c = elt.getAttribute('class');
     if ( ! c) return false;
@@ -274,7 +274,7 @@ var RuoteSheets = function() {
     return m ? m[1] : false;
   }
 
-  function renderHeadCell (headrow, x, w) {
+  function renderHeadCell(headrow, x, w) {
 
     var c = createElement(headrow, 'div', 'ruse_headcell row_-1 column_' + x);
 
@@ -288,7 +288,7 @@ var RuoteSheets = function() {
     return c;
   }
 
-  function renderHeadRow (sheet, widths, cols) {
+  function renderHeadRow(sheet, widths, cols) {
 
     var headrow = createElement(sheet, 'div', 'ruse_headrow');
     headrow.onmouseup = handleOnMouseUp;
@@ -298,14 +298,14 @@ var RuoteSheets = function() {
     createElement(headrow, 'div', null, { style: 'clear: both;' });
   }
 
-  function createRow (sheet) {
+  function createRow(sheet) {
     var row = createElement(sheet, 'div', 'ruse_row');
     row.onmousedown = rowOnMouseDown;
     row.onmouseup = rowOnMouseUp;
     return row;
   }
 
-  function createCell (row, value, width) {
+  function createCell(row, value, width) {
 
     if (value == undefined) value = '';
     if ((typeof value) != 'string') value = '' + value;
@@ -327,7 +327,7 @@ var RuoteSheets = function() {
     return cell;
   }
 
-  function render (sheet, data, widths) {
+  function render(sheet, data, widths) {
 
     sheet = findElt(sheet);
 
@@ -357,8 +357,8 @@ var RuoteSheets = function() {
 
     reclass(sheet);
   }
-  
-  function renderEmpty (container, rows, cols) {
+
+  function renderEmpty(container, rows, cols) {
 
     container = findElt(container);
 
@@ -373,7 +373,7 @@ var RuoteSheets = function() {
 
   // exit if func returns something than is considered true
   //
-  function iterate (sheet, func) {
+  function iterate(sheet, func) {
 
     sheet = findElt(sheet);
 
@@ -407,9 +407,9 @@ var RuoteSheets = function() {
     }
   }
 
-  function findCellByCoordinates (sheet, x, y) { // mouse coordinates
+  function findCellByCoordinates(sheet, x, y) { // mouse coordinates
 
-    var r = iterate(sheet, function (t, xx, yy, e) {
+    var r = iterate(sheet, function(t, xx, yy, e) {
 
       if (t != 'cell') return false;
 
@@ -424,16 +424,16 @@ var RuoteSheets = function() {
     return r ? r[0] : null;
   }
 
-  function countRows (sheet) {
+  function countRows(sheet) {
     return toArray(sheet).length;
   }
 
-  function countCols (sheet) {
+  function countCols(sheet) {
     return (toArray(sheet)[0] || []).length;
   }
 
-  function reclass (sheet) {
-    iterate(sheet, function (t, x, y, e) {
+  function reclass(sheet) {
+    iterate(sheet, function(t, x, y, e) {
       if (t == 'row')
         e.setAttribute('class', 'ruse_row row_' + y);
       else if (t == 'cell')
@@ -443,12 +443,12 @@ var RuoteSheets = function() {
     });
   }
 
-  function toArray (sheet) {
+  function toArray(sheet) {
 
     var a = [];
     var row = null;
 
-    iterate(sheet, function (t, x, y, e) {
+    iterate(sheet, function(t, x, y, e) {
       if (t == 'row') { row = []; a.push(row); }
       else if (t == 'cell') { row.push(e.value); }
     });
@@ -456,7 +456,7 @@ var RuoteSheets = function() {
     return a;
   }
 
-  function focusedToArray (sheet) {
+  function focusedToArray(sheet) {
     var a = [];
     var r = null;
     iterate(sheet, function (t, x, y, e) {
@@ -472,7 +472,7 @@ var RuoteSheets = function() {
     return aa;
   }
 
-  function currentCol (sheet, col) {
+  function currentCol(sheet, col) {
     if (col == undefined) {
       var cell = getCurrentCell(sheet);
       col = determineRowCol(cell)[1];
@@ -480,7 +480,7 @@ var RuoteSheets = function() {
     return col;
   }
 
-  function currentRow (sheet, row) {
+  function currentRow(sheet, row) {
     if (row == undefined) {
       var cell = getCurrentCell(sheet);
       return cell.parentNode;
@@ -488,7 +488,7 @@ var RuoteSheets = function() {
     return findRow(sheet, row);
   }
 
-  function addRow (sheet, row) {
+  function addRow(sheet, row) {
 
     save(sheet);
 
@@ -501,14 +501,14 @@ var RuoteSheets = function() {
     reclass(sheet);
   }
 
-  function addCol (sheet, col) {
+  function addCol(sheet, col) {
 
     save(sheet);
 
     col = currentCol(sheet, col);
 
     var cells = [];
-    iterate(sheet, function (t, x, y, e) {
+    iterate(sheet, function(t, x, y, e) {
       if ((t == 'cell' || t == 'headcell') && x == col) cells.push(e);
     });
     var headcell = cells[0];
@@ -522,7 +522,7 @@ var RuoteSheets = function() {
     reclass(sheet);
   }
 
-  function deleteCol (sheet, col) {
+  function deleteCol(sheet, col) {
 
     if (countCols(sheet) <= 1) return;
 
@@ -530,7 +530,7 @@ var RuoteSheets = function() {
 
     col = currentCol(sheet, col);
     var cells = [];
-    iterate(sheet, function (t, x, y, e) {
+    iterate(sheet, function(t, x, y, e) {
       if ((t == 'cell' || t == 'headcell') && x == col) cells.push(e);
     });
     for (var y = 0; y < cells.length; y++) {
@@ -540,12 +540,12 @@ var RuoteSheets = function() {
     reclass(sheet);
   }
 
-  function deleteRow (sheet, row) {
+  function deleteRow(sheet, row) {
 
     if (countRows(sheet) <= 1) return;
 
     save(sheet);
-    
+
     var forgetCurrent = (row == undefined);
     row = currentRow(sheet, row);
     row.parentNode.removeChild(row);
@@ -553,14 +553,14 @@ var RuoteSheets = function() {
     if (forgetCurrent) setCurrentCell(sheet, null);
   }
 
-  function save (sheet) {
+  function save(sheet) {
     sheet = findElt(sheet);
     if ( ! sheet.stack) sheet.stack = [];
     sheet.stack.push([ toArray(sheet), getWidths(sheet) ]);
     while (sheet.stack.length > 100) { sheet.stack.shift(); }
   }
 
-  function undo (sheet) {
+  function undo(sheet) {
     sheet = findElt(sheet);
     if ( ! sheet.stack || sheet.stack.length < 1) return;
     var state = sheet.stack.pop();
