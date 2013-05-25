@@ -391,7 +391,7 @@ module Decision
           case sm = matcher.should_match?(c, value)
             when nil, true
               result = matcher.matches?(c, value)
-              break if ! result && sm == true
+              break false if ! result && sm == true
               result
             else
               false
