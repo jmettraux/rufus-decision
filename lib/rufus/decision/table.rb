@@ -387,15 +387,11 @@ module Decision
         return false unless @matchers.any? { |matcher|
 
           c = matcher.cell_substitution? ? Rufus::dsub(cell, hash) : cell
+          m = matcher.matches?(c, value)
 
-          case sm = matcher.should_match?(c, value)
-            when nil, true
-              result = matcher.matches?(c, value)
-              break false if ! result && sm == true
-              result
-            else
-              false
-          end
+          break false if m == :break
+
+          m
         }
       end
 
