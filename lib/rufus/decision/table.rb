@@ -386,7 +386,15 @@ module Decision
 
         return false unless @matchers.any? do |matcher|
           c = matcher.cell_substitution? ? Rufus::dsub(cell, hash) : cell
-          matcher.matches?(c, value)
+          should_match = matcher.should_match?(c,value)
+          case should_match
+          when NilClass, TrueClass
+            result = matcher.matches?(c, value)
+            break if !result && should_match.is_a?(TrueClass)
+            result
+          when FalseClass
+            false
+          end
         end
       end
 
