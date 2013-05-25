@@ -40,7 +40,6 @@ class ShortCircuitMatcherTest < Test::Unit::TestCase
     end
   end
 
-
   class RaisingMatcher < Rufus::Decision::Matcher
     def matches?(cell, value)
       raise "No!"
@@ -58,13 +57,11 @@ class ShortCircuitMatcherTest < Test::Unit::TestCase
       anything, works
     })
 
-    table.matchers = [empty_matcher1, empty_matcher2]
-    
+    table.matchers = [ empty_matcher1, empty_matcher2 ]
+
     wi = { 'first_col' => 'aa' }
     do_test(table, wi, { "second_col" => "works" }, false)
-
   end
-
 
   def test_short_circuit
 
@@ -77,17 +74,16 @@ class ShortCircuitMatcherTest < Test::Unit::TestCase
       ShortCircuit.new,
       RaisingMatcher.new
     ]
-    
-    wi = { 'first_col' => 'aa' }
-    assert_nothing_raised{ table.transform wi }
 
-    do_test(table, wi, { }, false)
+    wi = { 'first_col' => 'aa' }
+    assert_nothing_raised { table.transform wi }
+
+    do_test(table, wi, {}, false)
 
     wi = { 'first_col' => 'aaa' }
-    assert_nothing_raised{ table.transform wi }
+    assert_nothing_raised { table.transform wi }
 
-    do_test(table, wi, {'second_col' => 'works' }, false)
-
+    do_test(table, wi, { 'second_col' => 'works' }, false)
   end
 
   def test_short_circuit_maybe
@@ -101,16 +97,14 @@ class ShortCircuitMatcherTest < Test::Unit::TestCase
       ShortCircuit.new,
       RaisingMatcher.new
     ]
-    
-    wi = { 'first_col' => 'aa' }
-    assert_raise(RuntimeError){ table.transform wi }
 
+    wi = { 'first_col' => 'aa' }
+    assert_raise(RuntimeError) { table.transform wi }
 
     wi = { 'first_col' => 'aaa' }
-    assert_nothing_raised{ table.transform wi }
+    assert_nothing_raised { table.transform wi }
 
-    do_test(table, wi, {'second_col' => 'works' }, false)
+    do_test(table, wi, { 'second_col' => 'works' }, false)
   end
-
 end
 
