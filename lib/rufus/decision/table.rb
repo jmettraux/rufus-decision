@@ -384,18 +384,19 @@ module Decision
 
         next if cell == nil || cell == ''
 
-        return false unless @matchers.any? do |matcher|
+        return false unless @matchers.any? { |matcher|
+
           c = matcher.cell_substitution? ? Rufus::dsub(cell, hash) : cell
-          should_match = matcher.should_match?(c,value)
-          case should_match
-          when NilClass, TrueClass
-            result = matcher.matches?(c, value)
-            break if !result && should_match.is_a?(TrueClass)
-            result
-          when FalseClass
-            false
+
+          case sm = matcher.should_match?(c, value)
+            when nil, true
+              result = matcher.matches?(c, value)
+              break if ! result && sm == true
+              result
+            else
+              false
           end
-        end
+        }
       end
 
       true
