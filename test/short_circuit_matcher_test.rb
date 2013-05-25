@@ -17,7 +17,7 @@ class ShortCircuitMatcherTest < Test::Unit::TestCase
   end
 
   class ShortCircuit < Rufus::Decision::Matcher
-    def should_match?(a,b)
+    def should_match?(a, b)
       if a =~ /^short:/
         if a =~ /:maybe:/
           nil
@@ -34,12 +34,6 @@ class ShortCircuitMatcherTest < Test::Unit::TestCase
     end
   end
 
-  class RaisingShortCircuit < ShortCircuit
-    def matches?(cell, value)
-      raise "No!"
-    end
-  end
-
   class RaisingMatcher < Rufus::Decision::Matcher
     def matches?(cell, value)
       raise "No!"
@@ -47,8 +41,10 @@ class ShortCircuitMatcherTest < Test::Unit::TestCase
   end
 
   def test_default_no_short_circuit
+
     empty_matcher1 = Matcher1.new
     assert ! empty_matcher1.should_match?(Object.new, Object.new)
+
     empty_matcher2 = Matcher2.new
     assert ! empty_matcher2.should_match?(Object.new, Object.new)
 
