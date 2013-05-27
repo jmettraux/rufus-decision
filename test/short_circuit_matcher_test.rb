@@ -1,3 +1,4 @@
+
 require File.expand_path('../base.rb', __FILE__)
 
 
@@ -5,36 +6,38 @@ class ShortCircuitMatcherTest < Test::Unit::TestCase
   include DecisionTestMixin
 
   class Matcher1 < Rufus::Decision::Matcher
+
     def matches?(cell, value)
       value.include?("aaa")
     end
   end
 
   class Matcher2 < Rufus::Decision::Matcher
+
     def matches?(cell, value)
       value.include?("aa")
     end
   end
 
   class ShortCircuit < Rufus::Decision::Matcher
-    def should_match?(a, b)
-      if a =~ /^short:/
-        if a =~ /:maybe:/
-          nil
-        else
-          true
-        end
-      else
-        false
-      end
-    end
 
     def matches?(cell, value)
-      cell.gsub(/^short:(maybe:)?/, '') == value
+
+      m = cell.match(/^short:(maybe:)?(.*)$/)
+
+      return false unless m    # no match
+
+      match = (m[2] == value)
+
+      return true if match     # match
+      return false if m[1]     # no match
+
+      :break                   # no match, but break
     end
   end
 
   class RaisingMatcher < Rufus::Decision::Matcher
+
     def matches?(cell, value)
       raise "No!"
     end
@@ -43,10 +46,7 @@ class ShortCircuitMatcherTest < Test::Unit::TestCase
   def test_default_no_short_circuit
 
     empty_matcher1 = Matcher1.new
-    assert ! empty_matcher1.should_match?(Object.new, Object.new)
-
     empty_matcher2 = Matcher2.new
-    assert ! empty_matcher2.should_match?(Object.new, Object.new)
 
     table = Rufus::Decision::Table.new(%Q{
       in:first_col,out:second_col
