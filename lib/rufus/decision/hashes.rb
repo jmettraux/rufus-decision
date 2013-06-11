@@ -203,11 +203,18 @@ module Decision
   #
   def self.check_and_eval(ruby_code, bndng=binding())
 
-    TREECHECKER.check(ruby_code)
-
+    begin
+      TREECHECKER.check(ruby_code)
+    rescue
+      raise $!, "Error parsing #{ruby_code} -> #{$!}", $!.backtrace
+    end
     # OK, green for eval...
 
-    eval(ruby_code, bndng)
+    begin
+      eval(ruby_code, bndng)
+    rescue
+      raise $!, "Error evaling #{ruby_code} -> #{$!}", $!.backtrace
+    end
   end
 end
 end
