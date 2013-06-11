@@ -30,6 +30,10 @@ module Rufus
 
       attr_accessor :options
 
+      # Subclasses of Matcher override this method to provide matching.
+      # If a matcher wishes to "short-circuit" -- ie, stop further matching
+      # by other matchers on this cell/value while not actually matching --
+      # it should return :break
       def matches?(cell, value)
         false
       end
