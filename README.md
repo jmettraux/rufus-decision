@@ -5,6 +5,8 @@
 
 CSV based Ruby decision tables.
 
+*WARNING*: this library is not maintained anymore. Sorry.
+
 
 ## getting it
 
